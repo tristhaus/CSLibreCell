@@ -1,5 +1,8 @@
 ﻿namespace Core
 {
+    /// <summary>
+    /// The rank of a card.
+    /// </summary>
     public enum Rank
     {
         Ace = 0,

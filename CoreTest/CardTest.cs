@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace CoreTest
 {
+    /// <summary>
+    /// Tests for the card class.
+    /// </summary>
     [TestClass]
     public class CardTest
     {

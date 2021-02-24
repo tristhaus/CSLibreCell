@@ -1,5 +1,8 @@
 ﻿namespace Core
 {
+    /// <summary>
+    /// The suit of a card.
+    /// </summary>
     public enum Suit
     {
         Clubs = 0,

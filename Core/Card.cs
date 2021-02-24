@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Core
 {
+    /// <summary>
+    /// Representation of a card in a standard 52 card deck.
+    /// </summary>
     public class Card : IEquatable<Card>
     {
         private static readonly Dictionary<Suit, string> SuitAsciiMap = new Dictionary<Suit, string>
@@ -31,8 +34,15 @@ namespace Core
             { Rank.King, "K"},
         };
 
+        /// <summary>
+        /// The Id of the card as defined by the necessary order for FreeCell deals.
+        /// </summary>
         private readonly uint Id;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Card"/> class.
+        /// </summary>
+        /// <param name="id">The Id of the card as defined by the necessary order for FreeCell deals.</param>
         public Card(uint id)
         {
             if (id >= 52)
@@ -43,10 +53,22 @@ namespace Core
             this.Id = id;
         }
 
+        /// <summary>
+        /// Gets the suit of the card.
+        /// </summary>
         public Suit Suit => (Suit)(this.Id % 4);
 
+        /// <summary>
+        /// Gets the rank of the card.
+        /// </summary>
         public Rank Rank => (Rank)(this.Id / 4);
 
+        /// <summary>
+        /// Gets the AsciiRepresentation of the card.
+        /// </summary>
+        /// <remarks>
+        /// Suits are denoted C, S, H, D. Ranks are denoted A, 2-9, T, J, Q, K.
+        /// </remarks>
         internal string AsciiRepresentation
         {
             get
@@ -80,6 +102,11 @@ namespace Core
             return this.Id.ToString();
         }
 
+        /// <summary>
+        /// Parses a card from the ASCII representation as available via <see cref="AsciiRepresentation"/>.
+        /// </summary>
+        /// <param name="asciiRepresentation">The input ASCII representation.</param>
+        /// <returns>The corresponding card.</returns>
         internal static Card ParseFromAsciiRepresentation(string asciiRepresentation)
         {
             if (asciiRepresentation.Length != 2)
