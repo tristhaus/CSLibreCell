@@ -33,6 +33,7 @@ namespace CoreTest
             Assert.IsTrue(reference.SequenceEqual(result));
         }
 
+        [TestMethod]
         public void CreationOfCorrectNumbersShouldWork2()
         {
             // Arrange

@@ -3,7 +3,7 @@
     /// <summary>
     /// Implementation of the necessary, ancient Pseudo-Random Number Generator.
     /// </summary>
-    public class Prng
+    internal class Prng
     {
         private const uint Two16 = 65536; //google 2^16
         private const uint Two31 = 2147483648; //google 2^31
