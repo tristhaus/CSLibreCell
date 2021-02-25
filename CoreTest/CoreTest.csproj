@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTest.cs" />
+    <Compile Include="GameTest.cs" />
     <Compile Include="PrngTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
