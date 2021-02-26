@@ -10,16 +10,22 @@ namespace CSLibreCell
 {
     class Program
     {
+        private static uint counter = 0;
+        private static Label theLogin;
+
         static void Main(string[] args)
         {
             Application.Init();
             var top = Application.Top;
 
+            var login = new Label($"Counter: {counter}") { X = 2, Y = 1 };
+            theLogin = login;
+
             // Creates the top-level window to show
             var win = new Window("MyApp")
             {
                 X = 0,
-                Y = 1, // Leave one row for the toplevel menu
+                Y = 0, // Leave one row for the toplevel menu
 
                 // By using Dim.Fill(), it will automatically resize without manual intervention
                 Width = Dim.Fill(),
@@ -27,45 +33,24 @@ namespace CSLibreCell
             };
 
             top.Add(win);
-
-            // Creates a menubar, the item "New" has a help menu.
-            var menu = new MenuBar(new MenuBarItem[] {
-
-            new MenuBarItem ("_Edit", new MenuItem [] {
-                new MenuItem ("_Copy", "", null),
-                new MenuItem ("C_ut", "", null),
-                new MenuItem ("_Paste", "", null)
-                })
-            });
-            top.Add(menu);
-
-            var login = new Label("Login: ") { X = 3, Y = 2 };
-            var password = new Label("Password: ")
-            {
-                X = Pos.Left(login),
-                Y = Pos.Top(login) + 1
-            };
-            var loginText = new TextField("")
-            {
-                X = Pos.Right(password),
-                Y = Pos.Top(login),
-                Width = 40
-            };
-            var passText = new TextField("")
-            {
-                Secret = true,
-                X = Pos.Left(loginText),
-                Y = Pos.Top(password),
-                Width = Dim.Width(loginText)
-            };
+            top.KeyDown += Top_KeyPress;
 
             // Add some controls, 
             win.Add(
                 // The ones with my favorite layout system, Computed
-                login, password, loginText, passText
+                login
             );
 
             Application.Run();
+        }
+
+        private static void Top_KeyPress(View.KeyEventEventArgs obj)
+        {
+            if (obj.KeyEvent.Key == Key.Space)
+            {
+                counter++;
+                theLogin.Text = $"Counter: {counter}";
+            }
         }
     }
 }
