@@ -1,6 +1,6 @@
 ﻿using Terminal.Gui;
 
-namespace CSLibreCell
+namespace CSLibreCell.Internal
 {
     internal static class Configuration
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSLibreCell.Internal;
+using System;
 using Terminal.Gui;
 
 namespace CSLibreCell

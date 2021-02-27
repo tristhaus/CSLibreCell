@@ -1,4 +1,4 @@
-﻿namespace Core
+﻿namespace Core.Internal
 {
     /// <summary>
     /// Implementation of the necessary, ancient Pseudo-Random Number Generator.
