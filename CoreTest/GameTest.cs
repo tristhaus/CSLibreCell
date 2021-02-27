@@ -51,5 +51,59 @@ namespace CoreTest
             // Assert
             Assert.AreEqual(reference, asciiRepresentation);
         }
+
+        [TestMethod]
+        public void GameSimpleMovesShouldWorkCorrectly()
+        {
+            // Arrange
+            var game = new Game(20761);
+
+            var reference = @" ..  TH  ..  .. || ..  ..  AH  ..
+---------------------------------
+  3S  AC  8C  AD  2H  AS  4C  6S
+  QD  3C  9S  TS  JS  8D  9D  2D
+  JC  9H  JD  5D  TC  2S  7C  QC
+  4H  2C  7H  7S  6H  6C  KH  4D
+  TD  QH  KD  KC  3D  KS  5S  6D
+  JH  4S  9C      8S  7D  5C  3H
+  QS  8H  5H                    ";
+
+            // Act
+            game.MakeMove(Location.Column3, Location.Cell1);
+            game.MakeMove(Location.Column3, Location.Foundation);
+
+            var asciiRepresentation = game.AsciiRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference, asciiRepresentation);
+        }
+
+        [TestMethod]
+        public void GameCopyCtorShouldWorkCorrectly()
+        {
+            // Arrange
+            var game = new Game(20761);
+
+            var copyReference = @" ..  ..  ..  .. || ..  ..  ..  ..
+---------------------------------
+  3S  AC  8C  AD  2H  AS  4C  6S
+  QD  3C  9S  TS  JS  8D  9D  2D
+  JC  9H  JD  5D  TC  2S  7C  QC
+  4H  2C  7H  7S  6H  6C  KH  4D
+  TD  QH  KD  KC  3D  KS  5S  6D
+  JH  4S  9C  AH  8S  7D  5C  3H
+  QS  8H  5H  TH                ";
+
+            // Act
+            var copy = new Game(game);
+            
+            game.MakeMove(Location.Column3, Location.Cell1);
+            game.MakeMove(Location.Column3, Location.Foundation);
+
+            var copyAsciiRepresentation = copy.AsciiRepresentation;
+
+            // Assert
+            Assert.AreEqual(copyReference, copyAsciiRepresentation);
+        }
     }
 }
