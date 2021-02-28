@@ -76,6 +76,28 @@ namespace CoreTest
         }
 
         [TestMethod]
+        public void GameShouldCorrectlyRoundtripUnicode()
+        {
+            // Arrange
+            var reference = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦  7♠  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥  5♥  6♦  2♠  3♦
+  3♣  8♣  3♥  6♥  6♠  5♦  A♠  2♦
+  4♥  5♣  9♣  4♣  7♥  Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(reference);
+            var result = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference, result);
+        }
+
+        [TestMethod]
         public void GameSimpleMovesShouldWorkCorrectly()
         {
             // Arrange

@@ -8,6 +8,9 @@ namespace Core
 {
     public class Game
     {
+        /// <summary>
+        /// The ID of the game, if known, zero otherwise.
+        /// </summary>
         private readonly uint id;
         private readonly Stack<Card>[] foundations = new Stack<Card>[4] { new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>() };
         private readonly List<Card>[] columns = new List<Card>[8] { new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>() };
@@ -38,6 +41,11 @@ namespace Core
             this.cells = other.cells.ToArray();
         }
 
+        private Game()
+        {
+            this.id = 0;
+        }
+
         /// <summary>
         /// Gets the AsciiRepresentation of the game.
         /// </summary>
@@ -60,6 +68,11 @@ namespace Core
             {
                 return this.CreateRepresentation(x => x.UnicodeRepresentation);
             }
+        }
+
+        internal static Game ParseFromUnicodeRepresentation(string unicodeRepresentation)
+        {
+            return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
         }
 
         internal void MakeMove(Location source, Location destination)
@@ -175,6 +188,61 @@ namespace Core
 
                 columnIndex = (columnIndex + 1) % 8;
             }
+        }
+
+        private static Game ParseFromRepresentation(string representation, Func<string, Card> parseFunc)
+        {
+            void ParseCellsFoundationsInto(Game target, string input, Func<string, Card> parser)
+            {
+                for (int cellIndex = 0; cellIndex < 4; cellIndex++)
+                {
+                    int index = 1 + cellIndex * 4;
+                    var cardRepresentation = input.Substring(index, 2);
+                    if (cardRepresentation != "..")
+                    {
+                        target.cells[cellIndex] = parser(cardRepresentation);
+                    }
+                }
+
+                for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
+                {
+                    int index = 19 + foundationIndex * 4;
+                    var cardRepresentation = input.Substring(index, 2);
+                    if (cardRepresentation != "..")
+                    {
+                        var card = parser(cardRepresentation);
+                        var foundation = target.foundations[foundationIndex];
+
+                        for (Rank rank = 0; rank <= card.Rank; rank++)
+                        {
+                            foundation.Push(new Card(card.Suit, rank));
+                        }
+                    }
+                }
+            }
+
+            void ParseColumnsInto(Game target, string[] inputs, Func<string, Card> parser)
+            {
+                foreach (var input in inputs)
+                {
+                    for (int columnIndex = 0; columnIndex < 8; columnIndex++)
+                    {
+                        int index = 2 + columnIndex * 4;
+                        var cardRepresentation = input.Substring(index, 2);
+                        if (cardRepresentation != "  ")
+                        {
+                            target.columns[columnIndex].Add(parser(cardRepresentation));
+                        }
+                    }
+                }
+            }
+
+            var game = new Game();
+            var lines = representation.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            ParseCellsFoundationsInto(game, lines[0], parseFunc);
+            ParseColumnsInto(game, lines.Skip(2).ToArray(), parseFunc);
+
+            return game;
         }
 
         private string CreateRepresentation(Func<Card, string> cardRepresentation)

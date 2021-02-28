@@ -50,8 +50,18 @@ namespace Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Card"/> class.
         /// </summary>
+        /// <param name="suit">The suit of the card.</param>
+        /// <param name="rank">The rank of the card.</param>
+        internal Card(Suit suit, Rank rank)
+        {
+            this.Id = (uint)rank * 4 + (uint)suit;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Card"/> class.
+        /// </summary>
         /// <param name="id">The Id of the card as defined by the necessary order for FreeCell deals.</param>
-        public Card(uint id)
+        internal Card(uint id)
         {
             if (id >= 52)
             {
@@ -151,9 +161,7 @@ namespace Core
             var suitString = representation.Substring(1, 1);
             var suit = suitMap.First(x => x.Value == suitString).Key;
 
-            var id = (uint)rank * 4 + (uint)suit;
-
-            return new Card(id);
+            return new Card(suit, rank);
         }
     }
 }
