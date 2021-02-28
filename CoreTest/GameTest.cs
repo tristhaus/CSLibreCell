@@ -53,6 +53,29 @@ namespace CoreTest
         }
 
         [TestMethod]
+        public void GameCreationShouldGiveCorrectGame30828()
+        {
+            // Arrange
+            var game = new Game(30828);
+
+            var reference = @" ..  ..  ..  .. || ..  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦  7♠  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥  5♥  6♦  2♠  3♦
+  3♣  8♣  3♥  6♥  6♠  5♦  A♠  2♦
+  4♥  5♣  9♣  4♣  A♣  Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣  7♥  A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥  K♦  Q♦  9♠  2♣
+  7♣  J♠  4♠  7♦                ";
+
+            // Act
+            var unicodeRepresentation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference, unicodeRepresentation);
+        }
+
+        [TestMethod]
         public void GameSimpleMovesShouldWorkCorrectly()
         {
             // Arrange

@@ -55,7 +55,7 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void CardShouldCorrectlyRoundTripEntireDeck()
+        public void CardShouldCorrectlyRoundTripEntireDeckAscii()
         {
             // Arrange
             var referenceDeck = new List<Card>(52);
@@ -72,5 +72,22 @@ namespace CoreTest
             Assert.IsTrue(referenceDeck.SequenceEqual(result));
         }
 
+        [TestMethod]
+        public void CardShouldCorrectlyRoundTripEntireDeckUnicode()
+        {
+            // Arrange
+            var referenceDeck = new List<Card>(52);
+            for (uint i = 0; i < 52; i++)
+            {
+                referenceDeck.Add(new Card(i));
+            }
+
+            // Act
+            var unicodeRepresentationDeck = referenceDeck.Select(x => x.UnicodeRepresentation).ToList();
+            var result = unicodeRepresentationDeck.Select(x => Card.ParseFromUnicodeRepresentation(x)).ToList();
+
+            // Assert
+            Assert.IsTrue(referenceDeck.SequenceEqual(result));
+        }
     }
 }

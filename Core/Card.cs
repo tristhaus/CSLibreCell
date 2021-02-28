@@ -17,6 +17,14 @@ namespace Core
             { Suit.Spades, "S"},
         };
 
+        private static readonly Dictionary<Suit, string> SuitUnicodeMap = new Dictionary<Suit, string>
+        {
+            { Suit.Clubs, "♣"},
+            { Suit.Diamonds, "♦"},
+            { Suit.Hearts, "♥"},
+            { Suit.Spades, "♠"},
+        };
+
         private static readonly Dictionary<Rank, string> RankMap = new Dictionary<Rank, string>
         {
             { Rank.Ace, "A"},
@@ -77,6 +85,14 @@ namespace Core
             }
         }
 
+        public string UnicodeRepresentation
+        {
+            get
+            {
+                return RankMap[this.Rank] + SuitUnicodeMap[this.Suit];
+            }
+        }
+
         public override bool Equals(object other)
         {
             if(!(other is Card otherCard))
@@ -109,16 +125,31 @@ namespace Core
         /// <returns>The corresponding card.</returns>
         internal static Card ParseFromAsciiRepresentation(string asciiRepresentation)
         {
-            if (asciiRepresentation.Length != 2)
+            return ParseFromRepresentation(asciiRepresentation, SuitAsciiMap);
+        }
+
+        /// <summary>
+        /// Parses a card from the ASCII representation as available via <see cref="UnicodeRepresentation"/>.
+        /// </summary>
+        /// <param name="unicodeRepresentation">The input Unicode representation.</param>
+        /// <returns>The corresponding card.</returns>
+        internal static Card ParseFromUnicodeRepresentation(string unicodeRepresentation)
+        {
+            return ParseFromRepresentation(unicodeRepresentation, SuitUnicodeMap);
+        }
+
+        private static Card ParseFromRepresentation(string representation, Dictionary<Suit, string> suitMap)
+        {
+            if (representation.Length != 2)
             {
-                throw new ArgumentException($"length of representation must be 2, is {asciiRepresentation.Length} for {asciiRepresentation}");
+                throw new ArgumentException($"length of representation must be 2, is {representation.Length} for {representation}");
             }
 
-            var rankString = asciiRepresentation.Substring(0, 1);
+            var rankString = representation.Substring(0, 1);
             var rank = RankMap.First(x => x.Value == rankString).Key;
 
-            var suitString = asciiRepresentation.Substring(1, 1);
-            var suit = SuitAsciiMap.First(x => x.Value == suitString).Key;
+            var suitString = representation.Substring(1, 1);
+            var suit = suitMap.First(x => x.Value == suitString).Key;
 
             var id = (uint)rank * 4 + (uint)suit;
 

@@ -46,56 +46,19 @@ namespace Core
         {
             get
             {
-                string GetCellRepresentations()
-                {
-                    string GetCellRepresentation(Card cell)
-                    {
-                        return cell != null ? cell.AsciiRepresentation : "..";
-                    }
+                return this.CreateRepresentation(x => x.AsciiRepresentation);
+            }
+        }
 
-                    return " " + string.Join("  ", this.cells.Select(GetCellRepresentation));
-                }
-
-                string GetFoundationRepresentations()
-                {
-                    string GetFoundationRepresentation(Stack<Card> foundation)
-                    {
-                        return foundation.Any() ? foundation.Peek().AsciiRepresentation : "..";
-                    }
-
-                    return " " + string.Join("  ", this.foundations.Select(GetFoundationRepresentation));
-                }
-
-                string GetColummRepresentations()
-                {
-                    string GetColumnLineRepresentation(List<Card> column, uint line)
-                    {
-                        return column.Count > line ? column[(int)line].AsciiRepresentation : "  ";
-                    }
-
-                    var maxCount = this.columns.Max(column => column.Count);
-
-                    var sb = new StringBuilder();
-
-                    for (uint line = 0; line < maxCount; line++)
-                    {
-                        for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
-                        {
-                            sb.Append($"  {GetColumnLineRepresentation(this.columns[columnIndex], line)}");
-                        }
-
-                        if (line + 1 < maxCount)
-                        {
-                            sb.Append("\r\n");
-                        }
-                    }
-
-                    return sb.ToString();
-                }
-
-                return GetCellRepresentations() + " ||" + GetFoundationRepresentations() + "\r\n"
-                    + "---------------------------------\r\n"
-                    + GetColummRepresentations();
+        /// <summary>
+        /// Gets the UnicodeRepresentation of the game.
+        /// </summary>
+        /// <seealso cref="Card.UnicodeRepresentation"/>
+        internal string UnicodeRepresentation
+        {
+            get
+            {
+                return this.CreateRepresentation(x => x.UnicodeRepresentation);
             }
         }
 
@@ -212,6 +175,60 @@ namespace Core
 
                 columnIndex = (columnIndex + 1) % 8;
             }
+        }
+
+        private string CreateRepresentation(Func<Card, string> cardRepresentation)
+        {
+            string GetCellRepresentations(Func<Card, string> representation)
+            {
+                string GetCellRepresentation(Card cell)
+                {
+                    return cell != null ? representation(cell) : "..";
+                }
+
+                return " " + string.Join("  ", this.cells.Select(GetCellRepresentation));
+            }
+
+            string GetFoundationRepresentations(Func<Card, string> representation)
+            {
+                string GetFoundationRepresentation(Stack<Card> foundation)
+                {
+                    return foundation.Any() ? representation(foundation.Peek()) : "..";
+                }
+
+                return " " + string.Join("  ", this.foundations.Select(GetFoundationRepresentation));
+            }
+
+            string GetColummRepresentations(Func<Card, string> representation)
+            {
+                string GetColumnLineRepresentation(List<Card> column, uint line)
+                {
+                    return column.Count > line ? representation(column[(int)line]) : "  ";
+                }
+
+                var maxCount = this.columns.Max(column => column.Count);
+
+                var sb = new StringBuilder();
+
+                for (uint line = 0; line < maxCount; line++)
+                {
+                    for (int columnIndex = 0; columnIndex < columns.Length; columnIndex++)
+                    {
+                        sb.Append($"  {GetColumnLineRepresentation(this.columns[columnIndex], line)}");
+                    }
+
+                    if (line + 1 < maxCount)
+                    {
+                        sb.Append("\r\n");
+                    }
+                }
+
+                return sb.ToString();
+            }
+
+            return GetCellRepresentations(cardRepresentation) + " ||" + GetFoundationRepresentations(cardRepresentation) + "\r\n"
+                + "---------------------------------\r\n"
+                + GetColummRepresentations(cardRepresentation);
         }
     }
 }
