@@ -150,5 +150,314 @@ namespace CoreTest
             // Assert
             Assert.AreEqual(copyReference, copyAsciiRepresentation);
         }
+
+        [TestMethod]
+        public void MoveFromFoundationShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Foundation, Location.Column4);
+            var result2 = game.IsMoveLegal(Location.Foundation, Location.Cell0);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+
+        [TestMethod]
+        public void MoveFromEmptyCellShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Cell0, Location.Column4);
+            var result2 = game.IsMoveLegal(Location.Cell0, Location.Cell1);
+            var result3 = game.IsMoveLegal(Location.Cell0, Location.Foundation);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+            Assert.IsFalse(result3);
+        }
+
+        [TestMethod]
+        public void MoveFromFilledCellToEmptyColumnShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.IsMoveLegal(Location.Cell2, Location.Column4);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void MoveFromEmptyColumnShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column4, Location.Cell0);
+            var result2 = game.IsMoveLegal(Location.Column4, Location.Column3);
+            var result3 = game.IsMoveLegal(Location.Column4, Location.Foundation);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+            Assert.IsFalse(result3);
+        }
+
+        [TestMethod]
+        public void MoveFromFilledColumnToEmptyCellShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.IsMoveLegal(Location.Column3, Location.Cell0);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void MoveFromFilledColumnToFilledCellShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.IsMoveLegal(Location.Column3, Location.Cell2);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IncorrectMoveToFoundationShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column3, Location.Foundation);
+            var result2 = game.IsMoveLegal(Location.Cell2, Location.Foundation);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+        }
+
+        [TestMethod]
+        public void CorrectMoveToFoundationShouldBeLegal()
+        {
+            // Arrange
+            var state = @" A♥  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦        
+  7♣  J♠  3♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column2, Location.Foundation);
+            var result2 = game.IsMoveLegal(Location.Cell0, Location.Foundation);
+
+            // Assert
+            Assert.IsTrue(result1);
+            Assert.IsTrue(result2);
+        }
+
+        [TestMethod]
+        public void CorrectSimpleMoveToFilledColumnShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  6♠  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♠  K♣      9♠  8♠  T♦
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣  7♦                
+  7♠                            
+  5♥                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column7, Location.Column1);
+            var result2 = game.IsMoveLegal(Location.Cell1, Location.Column3);
+
+            // Assert
+            Assert.IsTrue(result1);
+            Assert.IsTrue(result2);
+        }
+
+        [TestMethod]
+        public void ÎncorrectSimpleMoveToFilledColumnShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  6♠  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  7♦      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣  K♣                
+  7♠                            
+  5♥                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column6, Location.Column1);
+            var result2 = game.IsMoveLegal(Location.Cell2, Location.Column3);
+            var result3 = game.IsMoveLegal(Location.Column7, Location.Column1);
+            var result4 = game.IsMoveLegal(Location.Column3, Location.Column5);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+            Assert.IsFalse(result3);
+            Assert.IsFalse(result4);
+        }
+
+        [TestMethod]
+        public void SimpleMoveToEmptyColumnShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Column2, Location.Column4);
+            var result2 = game.IsMoveLegal(Location.Cell2, Location.Column4);
+
+            // Assert
+            Assert.IsTrue(result1);
+            Assert.IsTrue(result2);
+        }
+
     }
 }

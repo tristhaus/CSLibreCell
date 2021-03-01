@@ -82,6 +82,11 @@ namespace Core
         public Rank Rank => (Rank)(this.Id / 4);
 
         /// <summary>
+        /// Gets a value indicating whether the color of the card is black.
+        /// </summary>
+        public bool IsBlack => this.Suit == Suit.Clubs || this.Suit == Suit.Spades;
+
+        /// <summary>
         /// Gets the AsciiRepresentation of the card.
         /// </summary>
         /// <remarks>

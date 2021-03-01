@@ -75,6 +75,126 @@ namespace Core
             return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
         }
 
+        internal bool IsMoveLegal(Location source, Location destination)
+        {
+            Card GetSourceCard()
+            {
+                Card card;
+
+                if (source == Location.Cell0 ||
+                    source == Location.Cell1 ||
+                    source == Location.Cell2 ||
+                    source == Location.Cell3)
+                {
+                    card = this.cells[(int)source - (int)Location.Cell0];
+                }
+                else
+                {
+                    card = this.columns[(int)source - (int)Location.Column0].Last();
+                }
+
+                return card;
+            }
+
+            bool SimpleChecks()
+            {
+                // no move from foundation
+                if (source == Location.Foundation)
+                {
+                    return false;
+                }
+
+                // no move from empty cell
+                if ((source == Location.Cell0 ||
+                    source == Location.Cell1 ||
+                    source == Location.Cell2 ||
+                    source == Location.Cell3)
+                    && this.cells[(int)source - (int)Location.Cell0] == null)
+                {
+                    return false;
+                }
+
+                // no move from empty column
+                if ((source == Location.Column0 ||
+                    source == Location.Column1 ||
+                    source == Location.Column2 ||
+                    source == Location.Column3 ||
+                    source == Location.Column4 ||
+                    source == Location.Column2 ||
+                    source == Location.Column5 ||
+                    source == Location.Column6 ||
+                    source == Location.Column7)
+                    && this.columns[(int)source - (int)Location.Column0].Count == 0)
+                {
+                    return false;
+                }
+
+                // no move to filled cell
+                if ((destination == Location.Cell0 ||
+                    destination == Location.Cell1 ||
+                    destination == Location.Cell2 ||
+                    destination == Location.Cell3)
+                    && this.cells[(int)destination - (int)Location.Cell0] != null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            bool FoundationCheck()
+            {
+                if (destination == Location.Foundation)
+                {
+                    var card = GetSourceCard();
+
+                    var foundation = this.FindFoundationFor(card.Suit);
+
+                    if (card.Rank == Rank.Ace)
+                    {
+                        return foundation.Count == 0;
+                    }
+                    else
+                    {
+                        return foundation.Count != 0 && foundation.First().Rank + 1 == card.Rank;
+                    }
+                }
+
+                return true;
+            }
+
+            bool ColumnCheck()
+            {
+                if (destination == Location.Column0 ||
+                    destination == Location.Column1 ||
+                    destination == Location.Column2 ||
+                    destination == Location.Column3 ||
+                    destination == Location.Column4 ||
+                    destination == Location.Column2 ||
+                    destination == Location.Column5 ||
+                    destination == Location.Column6 ||
+                    destination == Location.Column7)
+                {
+                    var destinationColumn = this.columns[(int)destination - (int)Location.Column0];
+
+                    if (destinationColumn.Count != 0)
+                    {
+                        var sourceCard = GetSourceCard();
+
+                        var destinationCard = destinationColumn.Last();
+
+                        return sourceCard.IsBlack != destinationCard.IsBlack
+                            && destinationCard.Rank == sourceCard.Rank + 1;
+                    }
+
+                }
+            
+                return true;
+            }
+
+            return SimpleChecks() && FoundationCheck() && ColumnCheck();
+        }
+
         internal void MakeMove(Location source, Location destination)
         {
             Card card;
@@ -136,31 +256,31 @@ namespace Core
 
                 case Location.Foundation:
                     //todo: exception for when not fitting.
-                    Stack<Card> foundation;
-                    switch (card.Suit)
-                    {
-                        case Suit.Clubs:
-                            foundation = this.foundations[0];
-                            break;
-                        case Suit.Diamonds:
-                            foundation = this.foundations[3];
-                            break;
-                        case Suit.Hearts:
-                            foundation = this.foundations[2];
-                            break;
-                        case Suit.Spades:
-                            foundation = this.foundations[1];
-                            break;
-
-                        default:
-                            throw new Exception($"enum member '{card.Suit}' missing in {nameof(MakeMove)}");
-                    }
+                    Stack<Card> foundation = this.FindFoundationFor(card.Suit);
 
                     foundation.Push(card);
                     break;
 
                 default:
                     throw new Exception($"enum member '{destination}' missing in {nameof(MakeMove)}");
+            }
+        }
+
+        private Stack<Card> FindFoundationFor(Suit suit)
+        {
+            switch (suit)
+            {
+                case Suit.Clubs:
+                    return this.foundations[0];
+                case Suit.Diamonds:
+                    return this.foundations[3];
+                case Suit.Hearts:
+                    return this.foundations[2];
+                case Suit.Spades:
+                    return this.foundations[1];
+
+                default:
+                    throw new Exception($"enum member '{suit}' missing in {nameof(FindFoundationFor)}");
             }
         }
 
