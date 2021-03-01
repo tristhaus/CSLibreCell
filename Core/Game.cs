@@ -70,6 +70,17 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the game is won.
+        /// </summary>
+        internal bool IsWon
+        {
+            get
+            {
+                return this.foundations.Sum(x => x.Count) == 52;
+            }
+        }
+
         internal static Game ParseFromUnicodeRepresentation(string unicodeRepresentation)
         {
             return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
@@ -266,50 +277,6 @@ namespace Core
             }
         }
 
-        private Stack<Card> FindFoundationFor(Suit suit)
-        {
-            switch (suit)
-            {
-                case Suit.Clubs:
-                    return this.foundations[0];
-                case Suit.Diamonds:
-                    return this.foundations[3];
-                case Suit.Hearts:
-                    return this.foundations[2];
-                case Suit.Spades:
-                    return this.foundations[1];
-
-                default:
-                    throw new Exception($"enum member '{suit}' missing in {nameof(FindFoundationFor)}");
-            }
-        }
-
-        private void InitGame(uint gameId)
-        {
-            // create deck. Cards in correct order by their defintion
-            var deck = new List<Card>(52);
-            for (uint i = 0; i < 52; i++)
-            {
-                deck.Add(new Card(i));
-            }
-
-            int columnIndex = 0;
-            var prng = new Prng();
-            prng.Initialize(gameId);
-
-            while (deck.Any())
-            {
-                var index = (int)(prng.GetNext() % deck.Count);
-
-                // swap and pop, add to column
-                this.columns[columnIndex].Add(deck[index]);
-                deck[index] = deck.Last();
-                deck.RemoveAt(deck.Count - 1);
-
-                columnIndex = (columnIndex + 1) % 8;
-            }
-        }
-
         private static Game ParseFromRepresentation(string representation, Func<string, Card> parseFunc)
         {
             void ParseCellsFoundationsInto(Game target, string input, Func<string, Card> parser)
@@ -365,6 +332,32 @@ namespace Core
             return game;
         }
 
+        private void InitGame(uint gameId)
+        {
+            // create deck. Cards in correct order by their defintion
+            var deck = new List<Card>(52);
+            for (uint i = 0; i < 52; i++)
+            {
+                deck.Add(new Card(i));
+            }
+
+            int columnIndex = 0;
+            var prng = new Prng();
+            prng.Initialize(gameId);
+
+            while (deck.Any())
+            {
+                var index = (int)(prng.GetNext() % deck.Count);
+
+                // swap and pop, add to column
+                this.columns[columnIndex].Add(deck[index]);
+                deck[index] = deck.Last();
+                deck.RemoveAt(deck.Count - 1);
+
+                columnIndex = (columnIndex + 1) % 8;
+            }
+        }
+
         private string CreateRepresentation(Func<Card, string> cardRepresentation)
         {
             string GetCellRepresentations(Func<Card, string> representation)
@@ -418,5 +411,24 @@ namespace Core
                 + "---------------------------------\r\n"
                 + GetColummRepresentations(cardRepresentation);
         }
+
+        private Stack<Card> FindFoundationFor(Suit suit)
+        {
+            switch (suit)
+            {
+                case Suit.Clubs:
+                    return this.foundations[0];
+                case Suit.Diamonds:
+                    return this.foundations[3];
+                case Suit.Hearts:
+                    return this.foundations[2];
+                case Suit.Spades:
+                    return this.foundations[1];
+
+                default:
+                    throw new Exception($"enum member '{suit}' missing in {nameof(FindFoundationFor)}");
+            }
+        }
+
     }
 }

@@ -36,9 +36,11 @@ namespace CoreTest
 
             // Act
             var result = card.AsciiRepresentation;
+            var isBlack = card.IsBlack;
 
             // Assert
             Assert.AreEqual("4C", result);
+            Assert.IsTrue(isBlack);
         }
 
         [TestMethod]

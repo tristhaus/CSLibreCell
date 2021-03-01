@@ -459,5 +459,45 @@ namespace CoreTest
             Assert.IsTrue(result2);
         }
 
+        [TestMethod]
+        public void WonGameShouldBeWon()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || K♣  K♠  K♥  K♦
+---------------------------------";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.IsWon;
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void UnfinishedGameShouldNotBeWon()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.IsWon;
+
+            // Assert
+            Assert.IsFalse(result);
+        }
     }
 }
