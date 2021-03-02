@@ -152,6 +152,36 @@ namespace CoreTest
         }
 
         [TestMethod]
+        public void MoveWithIdenticalSourceAndDestinationShouldBeIllegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥      Q♦  9♠    
+  7♣  J♠  4♠  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.IsMoveLegal(Location.Foundation, Location.Foundation);
+            var result2 = game.IsMoveLegal(Location.Cell2, Location.Cell2);
+            var result3 = game.IsMoveLegal(Location.Column2, Location.Column2);
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+            Assert.IsFalse(result3);
+        }
+
+        [TestMethod]
         public void MoveFromFoundationShouldBeIllegal()
         {
             // Arrange

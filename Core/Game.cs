@@ -109,6 +109,12 @@ namespace Core
 
             bool SimpleChecks()
             {
+                // no move if source equals destination
+                if (source == destination)
+                {
+                    return false;
+                }
+
                 // no move from foundation
                 if (source == Location.Foundation)
                 {
