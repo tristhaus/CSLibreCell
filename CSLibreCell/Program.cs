@@ -1,4 +1,5 @@
-﻿using CSLibreCell.Internal;
+﻿using Core;
+using CSLibreCell.Internal;
 using System;
 using Terminal.Gui;
 
@@ -6,18 +7,17 @@ namespace CSLibreCell
 {
     class Program
     {
-        private static uint counter = 0; //todo: remove this when no longer used
-        private static Label theLogin;
+        private static readonly Handler Handler = new Handler();
+        private static Label GameLabel;
 
         static void Main(string[] args)
         {
             Application.Init();
             var top = Application.Top;
 
-            var login = new Label($"Counter: {counter}") { X = 2, Y = 1 };
-            login.Width = Dim.Fill();
-            login.Height = Dim.Fill();
-            theLogin = login;
+            GameLabel = new Label(string.Empty) { X = 2, Y = 1 };
+            GameLabel.Width = Dim.Fill();
+            GameLabel.Height = Dim.Fill();
 
             // Creates the top-level window to show
             var win = new Window(Localization.WindowTitle)
@@ -48,7 +48,7 @@ namespace CSLibreCell
             top.KeyDown += Top_KeyPress;
 
             win.Add(
-                login
+                GameLabel
             );
 
             Application.Run();
@@ -76,8 +76,7 @@ namespace CSLibreCell
 
         private static void StartRandomGame()
         {
-            counter++;
-            theLogin.Text = $"Counter: {counter}"; //TODO: replace by proper code
+            GameLabel.Text = $"random game"; //TODO: replace by proper code
         }
 
         private static void ShowChooseDialog()
@@ -91,10 +90,21 @@ namespace CSLibreCell
                 Width = Dim.Fill(),
                 Height = 1,
             };
-            dialog.Add(entry); //TODO: evaluate
+            dialog.Add(entry);
 
             var ok = new Button(Localization.OK, true);
-            ok.Clicked += () => { Application.RequestStop(); };
+            ok.Clicked += () =>
+            {
+                Application.RequestStop();
+                if (uint.TryParse(entry.Text.ToString(), out var id))
+                {
+                    var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
+                    if (refresh)
+                    {
+                        RefreshGame();
+                    }
+                }
+            };
             dialog.AddButton(ok);
 
             Application.Run(dialog);
@@ -108,6 +118,11 @@ namespace CSLibreCell
         private static void ShowStatusDialog()
         {
             throw new NotImplementedException(); //TODO
+        }
+
+        private static void RefreshGame()
+        {
+            GameLabel.Text = Handler.UnicodeGameRepresentation;
         }
     }
 }
