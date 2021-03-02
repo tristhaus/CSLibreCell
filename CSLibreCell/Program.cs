@@ -7,6 +7,7 @@ namespace CSLibreCell
 {
     class Program
     {
+        private static readonly Random Random = new Random();
         private static readonly Handler Handler = new Handler();
         private static Label GameLabel;
         private static Location? Source = null;
@@ -150,7 +151,8 @@ namespace CSLibreCell
 
         private static void StartRandomGame()
         {
-            GameLabel.Text = $"random game"; //TODO: replace by proper code
+            var id = Random.Next(1, 65537);
+            StartGame(Convert.ToUInt32(id));
         }
 
         private static void ShowChooseDialog()
@@ -172,16 +174,21 @@ namespace CSLibreCell
                 Application.RequestStop();
                 if (uint.TryParse(entry.Text.ToString(), out var id))
                 {
-                    var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
-                    if (refresh)
-                    {
-                        RefreshGame();
-                    }
+                    StartGame(id);
                 }
             };
             dialog.AddButton(ok);
 
             Application.Run(dialog);
+        }
+
+        private static void StartGame(uint id)
+        {
+            var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
+            if (refresh)
+            {
+                RefreshGame();
+            }
         }
 
         private static void ShowHelpDialog()
