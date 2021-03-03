@@ -1,6 +1,7 @@
 ﻿using Core;
 using CSLibreCell.Internal;
 using System;
+using System.Collections.Generic;
 using Terminal.Gui;
 
 namespace CSLibreCell
@@ -9,17 +10,54 @@ namespace CSLibreCell
     {
         private static readonly Random Random = new Random();
         private static readonly Handler Handler = new Handler();
-        private static Label GameLabel;
         private static Location? Source = null;
+
+        private static List<Label> CellLabels = new List<Label>(4);
+        private static List<Label> FoundationLabels = new List<Label>(4);
+        private static List<List<Label>> ColumnLabels = new List<List<Label>>(8);
+        private static List<Label> StaticLabels;
 
         static void Main(string[] args)
         {
             Application.Init();
             var top = Application.Top;
 
-            GameLabel = new Label(string.Empty) { X = 2, Y = 1 };
-            GameLabel.Width = Dim.Fill();
-            GameLabel.Height = Dim.Fill();
+            List<Label> allGameLabels = new List<Label>(100);
+
+            for (int cellIndex = 0; cellIndex < 4; cellIndex++)
+            {
+                CellLabels.Add(new Label("..") { X = 1 + cellIndex * 4, Y = 1, Width = 2, Height = 1 });
+            }
+
+            allGameLabels.AddRange(CellLabels);
+
+            for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
+            {
+                FoundationLabels.Add(new Label("..") { X = 19 + foundationIndex * 4, Y = 1, Width = 2, Height = 1 });
+            }
+
+            allGameLabels.AddRange(FoundationLabels);
+
+            StaticLabels = new List<Label>
+            {
+                new Label("||") { X = 16, Y = 1, Width = 2, Height = 1 },
+                new Label("--------------------------------") { X = 1, Y = 2, Width = 32, Height = 1 },
+            };
+
+            allGameLabels.AddRange(StaticLabels);
+
+            for (int columnIndex = 0; columnIndex < 8; columnIndex++)
+            {
+                var list = new List<Label>(19);
+                for (int i = 0; i < 19; i++)
+                {
+                    var label = new Label("  ") { X = 2 + columnIndex * 4, Y = 3 + i, Width = 2, Height = 1 };
+                    list.Add(label);
+                    allGameLabels.Add(label);
+                }
+
+                ColumnLabels.Add(list);
+            }
 
             // Creates the top-level window to show
             var win = new Window(Localization.WindowTitle)
@@ -49,9 +87,7 @@ namespace CSLibreCell
 
             top.KeyDown += Top_KeyPress;
 
-            win.Add(
-                GameLabel
-            );
+            win.Add(allGameLabels.ToArray());
 
             Application.Run();
         }
@@ -203,7 +239,35 @@ namespace CSLibreCell
 
         private static void RefreshGame()
         {
-            GameLabel.Text = Handler.UnicodeGameRepresentation;
+            var game = Handler.Game;
+
+            for (int cellIndex = 0; cellIndex < 4; cellIndex++)
+            {
+                CellLabels[cellIndex].Text = game.Cells[cellIndex]?.UnicodeRepresentation ?? "..";
+            }
+
+            for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
+            {
+                FoundationLabels[foundationIndex].Text = game.Foundations[foundationIndex]?.UnicodeRepresentation ?? "..";
+            }
+
+            for (int columnIndex = 0; columnIndex < 8; columnIndex++)
+            {
+                var column = game.Columns[columnIndex];
+                var length = column.Count;
+
+                var labels = ColumnLabels[columnIndex];
+
+                for (int lineIndex = 0; lineIndex < length; lineIndex++)
+                {
+                    labels[lineIndex].Text = column[lineIndex].UnicodeRepresentation;
+                }
+
+                for (int lineIndex = length; lineIndex < 19; lineIndex++)
+                {
+                    labels[lineIndex].Text = string.Empty;
+                }
+            }
         }
     }
 }

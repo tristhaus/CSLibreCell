@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core
 {
-    public class Game
+    public class Game : IGame
     {
         /// <summary>
         /// The ID of the game, if known, zero otherwise.
@@ -46,6 +46,43 @@ namespace Core
             this.id = 0;
         }
 
+        public uint Id => this.id;
+
+        /// <summary>
+        /// Gets a value indicating whether the game is won.
+        /// </summary>
+        public bool IsWon
+        {
+            get
+            {
+                return this.foundations.Sum(x => x.Count) == 52;
+            }
+        }
+
+        public IReadOnlyList<Card> Cells
+        {
+            get
+            {
+                return this.cells;
+            }
+        }
+
+        public IReadOnlyList<Card> Foundations
+        {
+            get
+            {
+                return this.foundations.Select(x => x.LastOrDefault()).ToArray();
+            }
+        }
+
+        public IReadOnlyList<IReadOnlyList<Card>> Columns
+        {
+            get
+            {
+                return this.columns;
+            }
+        }
+
         /// <summary>
         /// Gets the AsciiRepresentation of the game.
         /// </summary>
@@ -67,17 +104,6 @@ namespace Core
             get
             {
                 return this.CreateRepresentation(x => x.UnicodeRepresentation);
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the game is won.
-        /// </summary>
-        internal bool IsWon
-        {
-            get
-            {
-                return this.foundations.Sum(x => x.Count) == 52;
             }
         }
 
@@ -205,7 +231,7 @@ namespace Core
                     }
 
                 }
-            
+
                 return true;
             }
 

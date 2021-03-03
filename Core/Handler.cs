@@ -6,7 +6,9 @@ namespace Core
     {
         private Game game = null;
 
-        public string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
+        public IGame Game => this.game;
+
+        internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
         /// <summary>
         /// Attempts to execute the given command.
