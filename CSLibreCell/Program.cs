@@ -12,15 +12,29 @@ namespace CSLibreCell
         private static readonly Handler Handler = new Handler();
         private static Location? Source = null;
 
-        private static List<Label> CellLabels = new List<Label>(4);
-        private static List<Label> FoundationLabels = new List<Label>(4);
-        private static List<List<Label>> ColumnLabels = new List<List<Label>>(8);
+        private static readonly List<Label> CellLabels = new List<Label>(4);
+        private static readonly List<Label> FoundationLabels = new List<Label>(4);
+        private static readonly List<List<Label>> ColumnLabels = new List<List<Label>>(8);
         private static List<Label> StaticLabels;
+
+        private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
+        private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
+        private static readonly ColorScheme BlackColorScheme = new ColorScheme
+        {
+            Normal = BlackAttribute,
+            Focus = BlackAttribute,
+        };
+        private static readonly ColorScheme RedColorScheme = new ColorScheme
+        {
+            Normal = RedAttribute,
+            Focus = RedAttribute,
+        };
 
         static void Main(string[] args)
         {
             Application.Init();
             var top = Application.Top;
+            top.ColorScheme = BlackColorScheme;
 
             List<Label> allGameLabels = new List<Label>(100);
 
@@ -69,6 +83,7 @@ namespace CSLibreCell
                 Width = Dim.Fill(),
                 Height = Dim.Fill()
             };
+            win.ColorScheme = BlackColorScheme;
 
             top.Add(win);
 
@@ -239,16 +254,29 @@ namespace CSLibreCell
 
         private static void RefreshGame()
         {
+            void ApplyToLabel(Label label, Card card, string empty)
+            {
+                label.Text = card?.UnicodeRepresentation ?? empty;
+                if (card?.IsBlack == false)
+                {
+                    label.ColorScheme = RedColorScheme;
+                }
+                else
+                {
+                    label.ColorScheme = BlackColorScheme;
+                }
+            }
+
             var game = Handler.Game;
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
-                CellLabels[cellIndex].Text = game.Cells[cellIndex]?.UnicodeRepresentation ?? "..";
+                ApplyToLabel(CellLabels[cellIndex], game.Cells[cellIndex], empty: "..");
             }
 
             for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
             {
-                FoundationLabels[foundationIndex].Text = game.Foundations[foundationIndex]?.UnicodeRepresentation ?? "..";
+                ApplyToLabel(FoundationLabels[foundationIndex], game.Foundations[foundationIndex], empty: "..");
             }
 
             for (int columnIndex = 0; columnIndex < 8; columnIndex++)
@@ -260,12 +288,12 @@ namespace CSLibreCell
 
                 for (int lineIndex = 0; lineIndex < length; lineIndex++)
                 {
-                    labels[lineIndex].Text = column[lineIndex].UnicodeRepresentation;
+                    ApplyToLabel(labels[lineIndex], column[lineIndex], empty: string.Empty);
                 }
 
                 for (int lineIndex = length; lineIndex < 19; lineIndex++)
                 {
-                    labels[lineIndex].Text = string.Empty;
+                    ApplyToLabel(labels[lineIndex], card: null, empty: string.Empty);
                 }
             }
         }
