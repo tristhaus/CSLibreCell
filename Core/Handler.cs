@@ -23,7 +23,7 @@ namespace Core
                     return true;
 
                 case Operation.Move:
-                    var isLegal = this.game.IsMoveLegal((Location)command.Source, (Location)command.Destination);
+                    var isLegal = !this.game.IsWon && this.game.IsMoveLegal((Location)command.Source, (Location)command.Destination);
 
                     if (isLegal)
                     {

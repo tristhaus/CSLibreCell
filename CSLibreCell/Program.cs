@@ -16,6 +16,7 @@ namespace CSLibreCell
         private static readonly List<Label> FoundationLabels = new List<Label>(4);
         private static readonly List<List<Label>> ColumnLabels = new List<List<Label>>(8);
         private static List<Label> StaticLabels;
+        private static Window win;
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
         private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
@@ -74,7 +75,7 @@ namespace CSLibreCell
             }
 
             // Creates the top-level window to show
-            var win = new Window(Localization.WindowTitle)
+            win = new Window(Localization.WindowTitle)
             {
                 X = 0,
                 Y = 1, // Leave one row for the toplevel menu
@@ -238,7 +239,15 @@ namespace CSLibreCell
             var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
             if (refresh)
             {
+                AddGameIdToWindow();
+
                 RefreshGame();
+            }
+
+            void AddGameIdToWindow()
+            {
+                var idRep = $" #{Handler.Game.Id}";
+                win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
             }
         }
 
