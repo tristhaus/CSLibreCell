@@ -71,7 +71,7 @@ namespace Core
         {
             get
             {
-                return this.foundations.Select(x => x.LastOrDefault()).ToArray();
+                return this.foundations.Select(x => x.FirstOrDefault()).ToArray();
             }
         }
 

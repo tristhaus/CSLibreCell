@@ -16,6 +16,7 @@ namespace CSLibreCell
         private static readonly List<Label> FoundationLabels = new List<Label>(4);
         private static readonly List<List<Label>> ColumnLabels = new List<List<Label>>(8);
         private static List<Label> StaticLabels;
+        private static Label MessageLabel;
         private static Window win;
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
@@ -60,6 +61,10 @@ namespace CSLibreCell
             };
 
             allGameLabels.AddRange(StaticLabels);
+
+            MessageLabel = new Label(string.Empty) { X = 1, Y = 22, Width = 32, Height = 1 };
+
+            allGameLabels.Add(MessageLabel);
 
             for (int columnIndex = 0; columnIndex < 8; columnIndex++)
             {
@@ -263,7 +268,7 @@ namespace CSLibreCell
 
         private static void RefreshGame()
         {
-            void ApplyToLabel(Label label, Card card, string empty)
+            void ApplyCardToLabel(Label label, Card card, string empty)
             {
                 label.Text = card?.UnicodeRepresentation ?? empty;
                 if (card?.IsBlack == false)
@@ -278,14 +283,16 @@ namespace CSLibreCell
 
             var game = Handler.Game;
 
+            MessageLabel.Text = game.IsWon ? Localization.GameWon : string.Empty ;
+
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
-                ApplyToLabel(CellLabels[cellIndex], game.Cells[cellIndex], empty: "..");
+                ApplyCardToLabel(CellLabels[cellIndex], game.Cells[cellIndex], empty: "..");
             }
 
             for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
             {
-                ApplyToLabel(FoundationLabels[foundationIndex], game.Foundations[foundationIndex], empty: "..");
+                ApplyCardToLabel(FoundationLabels[foundationIndex], game.Foundations[foundationIndex], empty: "..");
             }
 
             for (int columnIndex = 0; columnIndex < 8; columnIndex++)
@@ -297,12 +304,12 @@ namespace CSLibreCell
 
                 for (int lineIndex = 0; lineIndex < length; lineIndex++)
                 {
-                    ApplyToLabel(labels[lineIndex], column[lineIndex], empty: string.Empty);
+                    ApplyCardToLabel(labels[lineIndex], column[lineIndex], empty: string.Empty);
                 }
 
                 for (int lineIndex = length; lineIndex < 19; lineIndex++)
                 {
-                    ApplyToLabel(labels[lineIndex], card: null, empty: string.Empty);
+                    ApplyCardToLabel(labels[lineIndex], card: null, empty: string.Empty);
                 }
             }
         }

@@ -6,6 +6,8 @@
         
         internal static string WindowTitle => "CSLibreCell";
 
+        public static string GameWon => "CONGRATULATIONS!";
+
         internal static class MenuBar
         {
             internal static string Game => "_Game";
