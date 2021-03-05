@@ -12,6 +12,8 @@ namespace Core
 
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
+        //TODO list of unwinnable games
+
         /// <summary>
         /// Attempts to execute the given command.
         /// </summary>
@@ -22,6 +24,8 @@ namespace Core
             {
                 case Operation.NewGame:
                     this.game = new Game((uint)command.GameId);
+                    this.game.AutoMoveToFoundation();
+
                     this.gameStates.Clear();
                     return true;
 
@@ -32,6 +36,8 @@ namespace Core
                     {
                         this.gameStates.Push(new Game(this.game));
                         this.game.MakeMove((Location)command.Source, (Location)command.Destination);
+
+                        while (this.game.AutoMoveToFoundation()) ;
                     }
 
                     return isLegal;

@@ -309,6 +309,121 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Check for and perform just one move to the foundations.
+        /// </summary>
+        /// <returns><c>true</c> if a move happened.</returns>
+        internal bool AutoMoveToFoundation()
+        {
+            bool Check(Card card)
+            {
+                if (card?.Rank == Rank.Ace)
+                {
+                    return true;
+                }
+                else
+                {
+                    var ownFoundation = this.FindFoundationFor(card.Suit);
+                    if (ownFoundation.FirstOrDefault()?.Rank == card.Rank - 1)
+                    {
+                        Stack<Card> otherFoundationSameColor;
+
+                        switch (card.Suit)
+                        {
+                            case Suit.Clubs:
+                                otherFoundationSameColor = this.FindFoundationFor(Suit.Spades);
+                                break;
+
+                            case Suit.Spades:
+                                otherFoundationSameColor = this.FindFoundationFor(Suit.Clubs);
+                                break;
+
+                            case Suit.Hearts:
+                                otherFoundationSameColor = this.FindFoundationFor(Suit.Diamonds);
+                                break;
+
+                            case Suit.Diamonds:
+                                otherFoundationSameColor = this.FindFoundationFor(Suit.Hearts);
+                                break;
+
+                            default:
+                                throw new Exception($"enum member '{card.Suit}' missing in {nameof(AutoMoveToFoundation)}");
+                        }
+
+                        var otherFoundationSameColorRank = (int?)otherFoundationSameColor.FirstOrDefault()?.Rank ?? -1;
+
+                        Stack<Card>[] foundationsOtherColor;
+                        if (card.IsBlack)
+                        {
+                            foundationsOtherColor = new Stack<Card>[]
+                            {
+                                this.FindFoundationFor(Suit.Hearts),
+                                this.FindFoundationFor(Suit.Diamonds),
+                            };
+                        }
+                        else
+                        {
+                            foundationsOtherColor = new Stack<Card>[]
+                            {
+                                this.FindFoundationFor(Suit.Clubs),
+                                this.FindFoundationFor(Suit.Spades),
+                            };
+                        }
+
+                        var otherMinRank = foundationsOtherColor
+                            .Select(x => (int?)x.FirstOrDefault()?.Rank ?? -1)
+                            .Min();
+
+                        if (otherMinRank + 2 >= (int)card.Rank && otherFoundationSameColorRank + 1 >= otherMinRank)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            for (int columnIndex = 0; columnIndex < 8; columnIndex++)
+            {
+                var card = this.columns[columnIndex].LastOrDefault();
+
+                if (card == null)
+                {
+                    continue;
+                }
+
+                bool result = Check(card);
+
+                if (result)
+                {
+                    this.MakeMove(Location.Column0 + columnIndex, Location.Foundation);
+                    return true;
+                }
+            }
+
+            for (int cellIndex = 0; cellIndex < 4; cellIndex++)
+            {
+                var card = this.cells[cellIndex];
+
+                if (card == null)
+                {
+                    continue;
+                }
+
+                bool result = Check(card);
+
+                if (result)
+                {
+                    this.MakeMove(Location.Cell0 + cellIndex, Location.Foundation);
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
         private static Game ParseFromRepresentation(string representation, Func<string, Card> parseFunc)
         {
             void ParseCellsFoundationsInto(Game target, string input, Func<string, Card> parser)

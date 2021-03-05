@@ -529,5 +529,535 @@ namespace CoreTest
             // Assert
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void AceOfHeartsShouldBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  A♥  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      Q♦  K♦    
+  7♣  J♠  T♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 2♣  ..  A♥  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      Q♦  K♦    
+  7♣  J♠  T♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void AceOfHeartsShouldBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      Q♦  K♦    
+  7♣  J♠  T♣  7♦      A♥        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 2♣  ..  A♥  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      Q♦  K♦    
+  7♣  J♠  T♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void TwoOfClubsShouldBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  2♣ || A♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      A♥  K♦    
+  7♣  J♠  T♣  7♦      Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      A♥  K♦    
+  7♣  J♠  T♣  7♦      Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void TwoOfClubsShouldBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || A♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      A♥  K♦    
+  7♣  J♠  T♣  7♦      Q♦        
+  7♠      2♣                    
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  3♣  J♥      A♥  K♦    
+  7♣  J♠  T♣  7♦      Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void ThreeOfClubsShouldNotBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  ..  3♣  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      A♥  K♦    
+  7♣  J♠      7♦      Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void ThreeOfClubsShouldNotBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣      9♠  8♠  T♠
+  Q♣  2♥  T♣  J♥      A♥  K♦    
+  7♣  J♠      7♦      Q♦        
+  7♠  3♣                        
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldNotBeAutoMovedFromCell1()
+        {
+            // Arrange
+            var state = @" ..  4♣  ..  .. || 3♣  ..  ..  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  9♥
+  4♥  5♣  9♣  K♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  J♥      9♠  8♠    
+  Q♣  2♥  T♣  7♦      A♥  K♦    
+  7♣  J♠              Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldNotBeAutoMovedFromColumn1()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 3♣  ..  ..  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  9♥
+  4♥  5♣  9♣  K♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  J♥      9♠  8♠    
+  Q♣  2♥  T♣  7♦      A♥  K♦    
+  7♣  J♠      4♣      Q♦        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  4♣  ..  .. || 3♣  A♠  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  T♠
+  8♦  A♦  T♦  J♥      9♠  K♦    
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣                            
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 4♣  A♠  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  T♠
+  8♦  A♦  T♦  J♥      9♠  K♦    
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣                            
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 3♣  A♠  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  T♠
+  8♦  A♦  T♦  J♥      9♠  K♦    
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣          4♣                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  ..  .. || 4♣  A♠  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  T♠
+  8♦  A♦  T♦  J♥      9♠  K♦    
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣                            
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldNotBeAutoMovedFromCell2()
+        {
+            // Arrange
+            var state = @" ..  4♣  ..  .. || 3♣  ..  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  A♠
+  8♦  A♦  T♦  J♥      9♠  K♦  T♠
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣                            
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void FourOfClubsShouldNotBeAutoMovedFromColumn2()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 3♣  ..  2♥  2♦
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  6♣  9♥
+  4♥  5♣  9♣  K♣      Q♥  8♠  A♠
+  8♦  A♦  T♦  J♥      9♠  K♦  T♠
+  Q♣  J♠  T♣  7♦      Q♦        
+  7♣  4♣                        
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void TenOfClubsShouldNotBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  T♣  ..  .. || 9♣  6♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  7♠  K♠  K♥                
+  9♥  T♠  8♠                    
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void TenOfClubsShouldNotBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 9♣  6♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  7♠  K♠  K♥                
+  9♥  T♠  8♠  T♣                
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(state, representation);
+        }
+
+        [TestMethod]
+        public void TenOfClubsShouldBeAutoMovedFromCell()
+        {
+            // Arrange
+            var state = @" ..  T♣  ..  .. || 9♣  7♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  K♠  K♥                    
+  9♥  T♠  8♠                    
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            var reference = @" ..  ..  ..  .. || T♣  7♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  K♠  K♥                    
+  9♥  T♠  8♠                    
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void TenOfClubsShouldBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  ..  .. || 9♣  7♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  K♠  K♥  T♣                
+  9♥  T♠  8♠                    
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            var reference = @" ..  ..  ..  .. || T♣  7♠  8♥  8♦
+---------------------------------
+  T♥  J♣  9♠  J♦  K♦            
+  Q♠  K♠  K♥                    
+  9♥  T♠  8♠                    
+  9♣  K♣  Q♥                    
+  8♦  T♦  J♥                    
+  Q♣  J♠  Q♦                    ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
     }
 }
