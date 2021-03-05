@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
     public class Handler
     {
         private Game game = null;
+        private Stack<Game> gameStates = new Stack<Game>();
 
         public IGame Game => this.game;
 
@@ -20,6 +22,7 @@ namespace Core
             {
                 case Operation.NewGame:
                     this.game = new Game((uint)command.GameId);
+                    this.gameStates.Clear();
                     return true;
 
                 case Operation.Move:
@@ -27,11 +30,21 @@ namespace Core
 
                     if (isLegal)
                     {
+                        this.gameStates.Push(new Game(this.game));
                         this.game.MakeMove((Location)command.Source, (Location)command.Destination);
                     }
-            
+
                     return isLegal;
-            
+
+                case Operation.Undo:
+                    var oldGameStateExists = this.gameStates.Count > 0;
+                    if (oldGameStateExists)
+                    {
+                        this.game = this.gameStates.Pop();
+                    }
+
+                    return oldGameStateExists;
+
                 default:
                     throw new Exception($"enum member '{command.Operation}' missing in {nameof(ExecuteCommand)}");
             }
@@ -41,6 +54,7 @@ namespace Core
         {
             NewGame,
             Move,
+            Undo,
         }
 
         public class Command
@@ -76,6 +90,16 @@ namespace Core
                     Operation = Operation.Move,
                     Source = source,
                     Destination = destination,
+                };
+
+                return command;
+            }
+
+            public static Command Undo()
+            {
+                var command = new Command
+                {
+                    Operation = Operation.Undo,
                 };
 
                 return command;

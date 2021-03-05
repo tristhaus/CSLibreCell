@@ -132,6 +132,15 @@ namespace CSLibreCell
                 }
             }
 
+            void HandleUndo()
+            {
+                var refresh = Handler.ExecuteCommand(Handler.Command.Undo());
+                if (refresh)
+                {
+                    RefreshGame();
+                }
+            }
+
             if (obj.KeyEvent.Key == Configuration.Keys.Menu.RandomGame)
             {
                 StartRandomGame();
@@ -151,6 +160,10 @@ namespace CSLibreCell
             else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cancel)
             {
                 Source = null;
+            }
+            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Undo)
+            {
+                HandleUndo();
             }
             else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cell0)
             {
@@ -283,7 +296,7 @@ namespace CSLibreCell
 
             var game = Handler.Game;
 
-            MessageLabel.Text = game.IsWon ? Localization.GameWon : string.Empty ;
+            MessageLabel.Text = game.IsWon ? Localization.GameWon : string.Empty;
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
