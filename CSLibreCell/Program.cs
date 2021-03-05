@@ -17,7 +17,7 @@ namespace CSLibreCell
         private static readonly List<List<Label>> ColumnLabels = new List<List<Label>>(8);
         private static List<Label> StaticLabels;
         private static Label MessageLabel;
-        private static Window win;
+        private static Window Win;
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
         private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
@@ -80,7 +80,7 @@ namespace CSLibreCell
             }
 
             // Creates the top-level window to show
-            win = new Window(Localization.WindowTitle)
+            Win = new Window(Localization.WindowTitle)
             {
                 X = 0,
                 Y = 1, // Leave one row for the toplevel menu
@@ -89,9 +89,9 @@ namespace CSLibreCell
                 Width = Dim.Fill(),
                 Height = Dim.Fill()
             };
-            win.ColorScheme = BlackColorScheme;
+            Win.ColorScheme = BlackColorScheme;
 
-            top.Add(win);
+            top.Add(Win);
 
             var menu = new MenuBar(new MenuBarItem[] {
             new MenuBarItem (Localization.MenuBar.Game, new MenuItem [] {
@@ -108,7 +108,7 @@ namespace CSLibreCell
 
             top.KeyDown += Top_KeyPress;
 
-            win.Add(allGameLabels.ToArray());
+            Win.Add(allGameLabels.ToArray());
 
             Application.Run();
         }
@@ -229,7 +229,7 @@ namespace CSLibreCell
         {
             var dialog = new Dialog(Localization.ChooseDialog.Title, 40, 20);
 
-            var entry = new TextField()
+            var entry = new TextField
             {
                 X = 1,
                 Y = 1,
@@ -265,13 +265,92 @@ namespace CSLibreCell
             void AddGameIdToWindow()
             {
                 var idRep = $" #{Handler.Game.Id}";
-                win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
+                Win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
             }
         }
 
         private static void ShowHelpDialog()
         {
-            throw new NotImplementedException(); //TODO
+            string FormatKey(Key key)
+            {
+                switch (key)
+                {
+                    case Key.Space:
+                        return "<SPACE>";
+                    case Key.F1:
+                        return "<F1>";
+                    case Key.F2:
+                        return "<F2>";
+                    case Key.F3:
+                        return "<F3>";
+                    case Key.F4:
+                        return "<F4>";
+                    case Key.F5:
+                        return "<F5>";
+                    case Key.F6:
+                        return "<F6>";
+                    case Key.F7:
+                        return "<F7>";
+                    case Key.F8:
+                        return "<F8>";
+                    case Key.F9:
+                        return "<F9>";
+                    case Key.F10:
+                        return "<F10>";
+                    case Key.F11:
+                        return "<F11>";
+                    case Key.F12:
+                        return "<F12>";
+
+                    default:
+                        return $"{(char)key}";
+                }
+            }
+
+            var content = string.Format(Localization.HelpDialog.ContentTemplate,
+                FormatKey(Configuration.Keys.Game.Cell0),
+                FormatKey(Configuration.Keys.Game.Cell1),
+                FormatKey(Configuration.Keys.Game.Cell2),
+                FormatKey(Configuration.Keys.Game.Cell3),
+                FormatKey(Configuration.Keys.Game.Foundation0),
+                FormatKey(Configuration.Keys.Game.Foundation1),
+                FormatKey(Configuration.Keys.Game.Foundation2),
+                FormatKey(Configuration.Keys.Game.Foundation3),
+                FormatKey(Configuration.Keys.Game.Column0),
+                FormatKey(Configuration.Keys.Game.Column1),
+                FormatKey(Configuration.Keys.Game.Column2),
+                FormatKey(Configuration.Keys.Game.Column3),
+                FormatKey(Configuration.Keys.Game.Column4),
+                FormatKey(Configuration.Keys.Game.Column5),
+                FormatKey(Configuration.Keys.Game.Column6),
+                FormatKey(Configuration.Keys.Game.Column7),
+                FormatKey(Configuration.Keys.Game.Cancel),
+                FormatKey(Configuration.Keys.Game.Undo),
+                FormatKey(Configuration.Keys.Menu.Help),
+                FormatKey(Configuration.Keys.Menu.Status),
+                FormatKey(Configuration.Keys.Menu.RandomGame),
+                FormatKey(Configuration.Keys.Menu.ChooseGame));
+
+            var dialog = new Dialog(Localization.HelpDialog.Title, 0, 0);
+
+            var label = new Label
+            {
+                X = 1,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                Text = content,
+            };
+            dialog.Add(label);
+
+            var ok = new Button(Localization.OK, true);
+            ok.Clicked += () =>
+            {
+                Application.RequestStop();
+            };
+            dialog.AddButton(ok);
+
+            Application.Run(dialog);
         }
 
         private static void ShowStatusDialog()
