@@ -24,7 +24,7 @@ namespace Core
             {
                 case Operation.NewGame:
                     this.game = new Game((uint)command.GameId);
-                    this.game.AutoMoveToFoundation();
+                    while (this.game.AutoMoveToFoundation()) ;
 
                     this.gameStates.Clear();
                     return true;
