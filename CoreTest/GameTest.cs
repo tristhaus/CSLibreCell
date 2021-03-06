@@ -755,22 +755,22 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void FourOfClubsShouldNotBeAutoMovedFromCell1()
+        public void FourOfDiamondsShouldNotBeAutoMovedFromCell()
         {
             // Arrange
-            var state = @" ..  4♣  ..  .. || 3♣  ..  ..  2♦
+            var state = @" ..  4♦  ..  .. || ..  2♠  ..  3♦
 ---------------------------------
-  4♦  T♥  J♣  9♦      3♠  J♦  5♠
-  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
-  4♠  8♣  3♥  6♥      5♦  A♠  9♥
-  4♥  5♣  9♣  K♣      Q♥  6♣  T♠
-  8♦  A♦  T♦  J♥      9♠  8♠    
-  Q♣  2♥  T♣  7♦      A♥  K♦    
-  7♣  J♠              Q♦        
-  7♠                            
-  5♥                            
-  6♠                            
-  7♥                            ";
+  4♠  T♣  J♦  9♠      3♥  J♠  5♥
+  Q♥  K♥  8♣  K♣      6♠  2♥  3♠
+  4♥  8♦  3♣  6♣      5♠  A♥  9♣
+  4♣  5♦  9♦  K♦      Q♣  6♦  T♥
+  8♠  A♠  T♠  J♣      9♥  8♥    
+  Q♦  2♣  T♦  7♠      A♣  K♠    
+  7♦  J♥              Q♠        
+  7♥                            
+  5♣                            
+  6♥                            
+  7♣                            ";
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
@@ -783,22 +783,22 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void FourOfClubsShouldNotBeAutoMovedFromColumn1()
+        public void FourOfDiamondsShouldNotBeAutoMovedFromColumn()
         {
             // Arrange
-            var state = @" ..  ..  ..  .. || 3♣  ..  ..  2♦
+            var state = @" ..  ..  ..  .. || ..  2♠  ..  3♦
 ---------------------------------
-  4♦  T♥  J♣  9♦      3♠  J♦  5♠
-  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
-  4♠  8♣  3♥  6♥      5♦  A♠  9♥
-  4♥  5♣  9♣  K♣      Q♥  6♣  T♠
-  8♦  A♦  T♦  J♥      9♠  8♠    
-  Q♣  2♥  T♣  7♦      A♥  K♦    
-  7♣  J♠      4♣      Q♦        
-  7♠                            
-  5♥                            
-  6♠                            
-  7♥                            ";
+  4♠  T♣  J♦  9♠      3♥  J♠  5♥
+  Q♥  K♥  8♣  K♣      6♠  2♥  3♠
+  4♥  8♦  3♣  6♣      5♠  A♥  9♣
+  4♣  5♦  9♦  K♦      Q♣  6♦  T♥
+  8♠  A♠  T♠  J♣      9♥  8♥    
+  Q♦  2♣  T♦  7♠      A♣  K♠    
+  7♦  J♥              Q♠        
+  7♥                  4♦        
+  5♣                            
+  6♥                            
+  7♣                            ";
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
@@ -895,7 +895,7 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void FourOfClubsShouldNotBeAutoMovedFromCell2()
+        public void FourOfClubsShouldNotBeAutoMovedFromCell()
         {
             // Arrange
             var state = @" ..  4♣  ..  .. || 3♣  ..  2♥  2♦
@@ -923,7 +923,7 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void FourOfClubsShouldNotBeAutoMovedFromColumn2()
+        public void FourOfClubsShouldNotBeAutoMovedFromColumn()
         {
             // Arrange
             var state = @" ..  ..  ..  .. || 3♣  ..  2♥  2♦
