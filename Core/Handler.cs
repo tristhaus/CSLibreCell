@@ -6,7 +6,7 @@ namespace Core
     public class Handler
     {
         private Game game = null;
-        private Stack<Game> gameStates = new Stack<Game>();
+        private readonly Stack<Game> gameStates = new Stack<Game>();
 
         public IGame Game => this.game;
 
@@ -30,17 +30,22 @@ namespace Core
                     return true;
 
                 case Operation.Move:
-                    var isLegal = !this.game.IsWon && this.game.IsMoveLegal((Location)command.Source, (Location)command.Destination);
-
-                    if (isLegal)
+                    if (!this.game.IsWon)
                     {
-                        this.gameStates.Push(new Game(this.game));
-                        this.game.MakeMove((Location)command.Source, (Location)command.Destination);
+                        var moveSize = this.game.GetLegalMoveSize((Location)command.Source, (Location)command.Destination);
 
-                        while (this.game.AutoMoveToFoundation()) ;
+                        if (moveSize > 0)
+                        {
+                            this.gameStates.Push(new Game(this.game));
+                            this.game.MakeMove((Location)command.Source, (Location)command.Destination, moveSize);
+
+                            while (this.game.AutoMoveToFoundation()) ;
+
+                            return true;
+                        }
                     }
 
-                    return isLegal;
+                    return false;
 
                 case Operation.Undo:
                     var oldGameStateExists = this.gameStates.Count > 0;

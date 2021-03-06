@@ -114,13 +114,54 @@ namespace CoreTest
   QS  8H  5H                    ";
 
             // Act
-            game.MakeMove(Location.Column3, Location.Cell1);
-            game.MakeMove(Location.Column3, Location.Foundation);
+            game.MakeMove(Location.Column3, Location.Cell1, moveSize: 1);
+            game.MakeMove(Location.Column3, Location.Foundation, moveSize: 1);
 
             var asciiRepresentation = game.AsciiRepresentation;
 
             // Assert
             Assert.AreEqual(reference, asciiRepresentation);
+        }
+
+        [TestMethod]
+        public void GameSuperMoveShouldWorkCorrectly()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  K♣      A♥  8♠    
+  Q♣  2♥  7♦  J♥      Q♦  9♠    
+  7♣  J♠  4♠  T♣                
+  7♠          9♥                
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            var reference = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  3♣  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  K♣      A♥  8♠    
+  Q♣  2♥  7♦          Q♦  9♠    
+  7♣  J♠  4♠          J♥        
+  7♠                  T♣        
+  5♥                  9♥        
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            game.MakeMove(Location.Column3, Location.Column5, 3);
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference, representation);
         }
 
         [TestMethod]
@@ -141,9 +182,9 @@ namespace CoreTest
 
             // Act
             var copy = new Game(game);
-
-            game.MakeMove(Location.Column3, Location.Cell1);
-            game.MakeMove(Location.Column3, Location.Foundation);
+            
+            game.MakeMove(Location.Column3, Location.Cell1, moveSize: 1);
+            game.MakeMove(Location.Column3, Location.Foundation, moveSize: 1);
 
             var copyAsciiRepresentation = copy.AsciiRepresentation;
 
@@ -199,14 +240,14 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Foundation, Location.Foundation);
-            var result2 = game.IsMoveLegal(Location.Cell2, Location.Cell2);
-            var result3 = game.IsMoveLegal(Location.Column2, Location.Column2);
+            var result1 = game.GetLegalMoveSize(Location.Foundation, Location.Foundation);
+            var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Cell2);
+            var result3 = game.GetLegalMoveSize(Location.Column2, Location.Column2);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
-            Assert.IsFalse(result3);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
+            Assert.AreEqual(0u, result3);
         }
 
         [TestMethod]
@@ -229,12 +270,12 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Foundation, Location.Column4);
-            var result2 = game.IsMoveLegal(Location.Foundation, Location.Cell0);
+            var result1 = game.GetLegalMoveSize(Location.Foundation, Location.Column4);
+            var result2 = game.GetLegalMoveSize(Location.Foundation, Location.Cell0);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
         }
 
         [TestMethod]
@@ -257,14 +298,14 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Cell0, Location.Column4);
-            var result2 = game.IsMoveLegal(Location.Cell0, Location.Cell1);
-            var result3 = game.IsMoveLegal(Location.Cell0, Location.Foundation);
+            var result1 = game.GetLegalMoveSize(Location.Cell0, Location.Column4);
+            var result2 = game.GetLegalMoveSize(Location.Cell0, Location.Cell1);
+            var result3 = game.GetLegalMoveSize(Location.Cell0, Location.Foundation);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
-            Assert.IsFalse(result3);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
+            Assert.AreEqual(0u, result3);
         }
 
         [TestMethod]
@@ -287,10 +328,10 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result = game.IsMoveLegal(Location.Cell2, Location.Column4);
+            var result = game.GetLegalMoveSize(Location.Cell2, Location.Column4);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.AreEqual(1u, result);
         }
 
         [TestMethod]
@@ -313,14 +354,14 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column4, Location.Cell0);
-            var result2 = game.IsMoveLegal(Location.Column4, Location.Column3);
-            var result3 = game.IsMoveLegal(Location.Column4, Location.Foundation);
+            var result1 = game.GetLegalMoveSize(Location.Column4, Location.Cell0);
+            var result2 = game.GetLegalMoveSize(Location.Column4, Location.Column3);
+            var result3 = game.GetLegalMoveSize(Location.Column4, Location.Foundation);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
-            Assert.IsFalse(result3);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
+            Assert.AreEqual(0u, result3);
         }
 
         [TestMethod]
@@ -343,10 +384,10 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result = game.IsMoveLegal(Location.Column3, Location.Cell0);
+            var result = game.GetLegalMoveSize(Location.Column3, Location.Cell0);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.AreEqual(1u, result);
         }
 
         [TestMethod]
@@ -369,10 +410,10 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result = game.IsMoveLegal(Location.Column3, Location.Cell2);
+            var result = game.GetLegalMoveSize(Location.Column3, Location.Cell2);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.AreEqual(0u, result);
         }
 
         [TestMethod]
@@ -395,12 +436,12 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column3, Location.Foundation);
-            var result2 = game.IsMoveLegal(Location.Cell2, Location.Foundation);
+            var result1 = game.GetLegalMoveSize(Location.Column3, Location.Foundation);
+            var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Foundation);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
         }
 
         [TestMethod]
@@ -423,12 +464,12 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column2, Location.Foundation);
-            var result2 = game.IsMoveLegal(Location.Cell0, Location.Foundation);
+            var result1 = game.GetLegalMoveSize(Location.Column2, Location.Foundation);
+            var result2 = game.GetLegalMoveSize(Location.Cell0, Location.Foundation);
 
             // Assert
-            Assert.IsTrue(result1);
-            Assert.IsTrue(result2);
+            Assert.AreEqual(1u, result1);
+            Assert.AreEqual(1u, result2);
         }
 
         [TestMethod]
@@ -450,12 +491,12 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column7, Location.Column1);
-            var result2 = game.IsMoveLegal(Location.Cell1, Location.Column3);
+            var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column1);
+            var result2 = game.GetLegalMoveSize(Location.Cell1, Location.Column3);
 
             // Assert
-            Assert.IsTrue(result1);
-            Assert.IsTrue(result2);
+            Assert.AreEqual(1u, result1);
+            Assert.AreEqual(1u, result2);
         }
 
         [TestMethod]
@@ -477,16 +518,16 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column6, Location.Column1);
-            var result2 = game.IsMoveLegal(Location.Cell2, Location.Column3);
-            var result3 = game.IsMoveLegal(Location.Column7, Location.Column1);
-            var result4 = game.IsMoveLegal(Location.Column3, Location.Column5);
+            var result1 = game.GetLegalMoveSize(Location.Column6, Location.Column1);
+            var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Column3);
+            var result3 = game.GetLegalMoveSize(Location.Column7, Location.Column1);
+            var result4 = game.GetLegalMoveSize(Location.Column3, Location.Column5);
 
             // Assert
-            Assert.IsFalse(result1);
-            Assert.IsFalse(result2);
-            Assert.IsFalse(result3);
-            Assert.IsFalse(result4);
+            Assert.AreEqual(0u, result1);
+            Assert.AreEqual(0u, result2);
+            Assert.AreEqual(0u, result3);
+            Assert.AreEqual(0u, result4);
         }
 
         [TestMethod]
@@ -509,12 +550,221 @@ namespace CoreTest
 
             // Act
             var game = Game.ParseFromUnicodeRepresentation(state);
-            var result1 = game.IsMoveLegal(Location.Column2, Location.Column4);
-            var result2 = game.IsMoveLegal(Location.Cell2, Location.Column4);
+            var result1 = game.GetLegalMoveSize(Location.Column2, Location.Column4);
+            var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Column4);
 
             // Assert
-            Assert.IsTrue(result1);
-            Assert.IsTrue(result2);
+            Assert.AreEqual(1u, result1);
+            Assert.AreEqual(1u, result2);
+        }
+
+        [TestMethod]
+        public void SuperMoveToEmptyColumnShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  K♣      9♠  8♠  9♥
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣  7♦                
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column4);
+
+            // Assert
+            Assert.AreEqual(2u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveToMatchingColumnShouldBeLegal()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      Q♥  6♣  T♠
+  8♦  A♦  T♦  K♣      9♠  8♠  9♥
+  Q♣  2♥  T♣  J♥      Q♦  A♥    
+  7♣  J♠  3♣              7♦    
+  7♠                            
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column4);
+
+            // Assert
+            Assert.AreEqual(2u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldBeTruncatedCorrectlyToMatchColumn()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠  2♦
+  4♥  5♣  9♣  4♣      J♥  6♣  T♠
+  8♦  A♦  T♣  K♣      9♠  8♠  9♥
+  Q♣  2♥  3♣  Q♥      Q♦  A♥    
+  7♣                  J♠  7♦    
+  7♠                  T♦        
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(2u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldBePossibleWithJustAColumn()
+        {
+            // Arrange
+            var state = @" 9♥  T♠  K♦  2♦ || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♠  8♣  3♥  6♥      5♦  A♠    
+  4♥  5♣  9♣  4♣      J♥  6♣    
+  8♦  A♦  T♣  K♣      9♠  8♠    
+  Q♣  2♥  3♣  Q♥      Q♦  A♥    
+  7♣                  J♠  7♦    
+  7♠                  T♦        
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(2u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldBeDeniedIfNoCapacity()
+        {
+            // Arrange
+            var state = @" 9♥  T♠  K♦  2♦ || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦  3♦  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠    
+  4♠  8♣  3♥  6♥      5♦  A♠    
+  4♥  5♣  9♣  4♣      J♥  6♣    
+  8♦  A♦  T♣  K♣      9♠  8♠    
+  Q♣  2♥  3♣  Q♥      Q♦  A♥    
+  7♣                  J♠  7♦    
+  7♠                  T♦        
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(0u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldBeDeniedIfTooLittleCapacity()
+        {
+            // Arrange
+            var state = @" 9♥  T♠  K♦  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦  3♦  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  2♦
+  4♠  8♣  3♥  6♥      5♦  A♠    
+  4♥  5♣  T♣  4♣      J♥  6♣    
+  8♦  A♦  3♣  K♣      9♠  8♠    
+  Q♣  2♥      Q♥      Q♦  A♥    
+  7♣                  J♠  7♦    
+  7♠                  T♦        
+  5♥                  9♣        
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(0u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldBePossibleWithJustCells()
+        {
+            // Arrange
+            var state = @" 9♥  T♠  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦  3♦  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  2♦
+  4♠  8♣  3♥  6♥      5♦  A♠  K♦
+  4♥  5♣  T♣  4♣      J♥  6♣    
+  8♦  A♦  3♣  K♣      9♠  8♠    
+  Q♣  2♥      Q♥      Q♦  A♥    
+  7♣                  J♠  7♦    
+  7♠                  T♦        
+  5♥                  9♣        
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(3u, result1);
+        }
+
+        [TestMethod]
+        public void SuperMoveShouldHandleComplicatedCase()
+        {
+            // Arrange
+            var state = @" 9♥  T♠  ..  .. || 2♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  3♥  K♥      6♦  2♠  2♦
+  4♠  8♣  T♣  4♣      5♦  A♠  K♦
+  4♥  5♣  3♣  K♣      J♥  6♣  3♦
+  8♦  A♦      Q♥      9♠  8♠    
+  Q♣  2♥              Q♦  A♥    
+  7♣                  J♠  7♦    
+  5♥                  T♦        
+  6♠                  9♣        
+  7♥                  8♥        
+                      7♠        
+                      6♥        ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
+
+            // Assert
+            Assert.AreEqual(6u, result1);
         }
 
         [TestMethod]

@@ -14,8 +14,7 @@ namespace Core
         private readonly uint id;
         private readonly Stack<Card>[] foundations = new Stack<Card>[4] { new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>() };
         private readonly List<Card>[] columns = new List<Card>[8] { new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>() };
-
-        private Card[] cells = new Card[4] { null, null, null, null };
+        private readonly Card[] cells = new Card[4] { null, null, null, null };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
@@ -114,7 +113,7 @@ namespace Core
             return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
         }
 
-        internal bool IsMoveLegal(Location source, Location destination)
+        internal uint GetLegalMoveSize(Location source, Location destination)
         {
             Card GetSourceCard()
             {
@@ -135,18 +134,18 @@ namespace Core
                 return card;
             }
 
-            bool SimpleChecks()
+            uint? SimpleChecks()
             {
                 // no move if source equals destination
                 if (source == destination)
                 {
-                    return false;
+                    return 0;
                 }
 
                 // no move from foundation
                 if (source == Location.Foundation)
                 {
-                    return false;
+                    return 0;
                 }
 
                 // no move from empty cell
@@ -156,22 +155,14 @@ namespace Core
                     source == Location.Cell3)
                     && this.cells[(int)source - (int)Location.Cell0] == null)
                 {
-                    return false;
+                    return 0;
                 }
 
                 // no move from empty column
-                if ((source == Location.Column0 ||
-                    source == Location.Column1 ||
-                    source == Location.Column2 ||
-                    source == Location.Column3 ||
-                    source == Location.Column4 ||
-                    source == Location.Column2 ||
-                    source == Location.Column5 ||
-                    source == Location.Column6 ||
-                    source == Location.Column7)
+                if (IsColumnLocation(source)
                     && this.columns[(int)source - (int)Location.Column0].Count == 0)
                 {
-                    return false;
+                    return 0;
                 }
 
                 // no move to filled cell
@@ -181,13 +172,13 @@ namespace Core
                     destination == Location.Cell3)
                     && this.cells[(int)destination - (int)Location.Cell0] != null)
                 {
-                    return false;
+                    return 0;
                 }
 
-                return true;
+                return null;
             }
 
-            bool FoundationCheck()
+            uint? FoundationCheck()
             {
                 if (destination == Location.Foundation)
                 {
@@ -197,52 +188,123 @@ namespace Core
 
                     if (card.Rank == Rank.Ace)
                     {
-                        return foundation.Count == 0;
+                        return foundation.Count == 0 ? 1u : 0u;
                     }
                     else
                     {
-                        return foundation.Count != 0 && foundation.Peek().Rank + 1 == card.Rank;
+                        return foundation.Count != 0 && foundation.Peek().Rank + 1 == card.Rank ? 1u : 0u;
                     }
                 }
 
-                return true;
+                return null;
             }
 
-            bool ColumnCheck()
+            uint? ColumnCheck()
             {
-                if (destination == Location.Column0 ||
-                    destination == Location.Column1 ||
-                    destination == Location.Column2 ||
-                    destination == Location.Column3 ||
-                    destination == Location.Column4 ||
-                    destination == Location.Column2 ||
-                    destination == Location.Column5 ||
-                    destination == Location.Column6 ||
-                    destination == Location.Column7)
+                if (IsColumnLocation(destination))
                 {
                     var destinationColumn = this.columns[(int)destination - (int)Location.Column0];
 
-                    if (destinationColumn.Count != 0)
+                    if (IsColumnLocation(source))
                     {
-                        var sourceCard = GetSourceCard();
+                        var sourceColumn = this.columns[(int)source - (int)Location.Column0];
 
-                        var destinationCard = destinationColumn.Last();
+                        // get maximum move size according to cells and empty columns
+                        var numberEmptyColumns = this.columns.Count(x => x.Count == 0) - (destinationColumn.Count == 0 ? 1 : 0);
+                        var numberEmptyCells = this.cells.Count(x => x == null);
 
-                        return sourceCard.IsBlack != destinationCard.IsBlack
-                            && destinationCard.Rank == sourceCard.Rank + 1;
+                        uint maxMoveSize = Convert.ToUInt32(numberEmptyCells) + 1;
+
+                        for (int i = 0; i < numberEmptyColumns; i++)
+                        {
+                            maxMoveSize *= 2;
+                        }
+
+                        maxMoveSize = Math.Min(13, maxMoveSize);
+
+                        // look for a continuous run in the source column
+                        var run = 1;
+
+                        for (int i = 0; i < sourceColumn.Count - 1; i++)
+                        {
+                            var upperCard = sourceColumn[sourceColumn.Count - (2 + i)];
+                            var lowerCard = sourceColumn[sourceColumn.Count - (1 + i)];
+
+                            if (upperCard.IsBlack != lowerCard.IsBlack && upperCard.Rank == lowerCard.Rank + 1)
+                            {
+                                run++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        maxMoveSize = Math.Min(Convert.ToUInt32(run), maxMoveSize);
+
+                        // now cut down move such that it fits onto the destination bottom card
+                        var destinationCard = destinationColumn.LastOrDefault();
+
+                        if (destinationCard == null)
+                        {
+                            return maxMoveSize;
+                        }
+                        else
+                        {
+                            uint moveSize = 1;
+                            bool foundLegalMove = false;
+                            for (; moveSize <= maxMoveSize; moveSize++)
+                            {
+                                var topCardMoved = sourceColumn[sourceColumn.Count - (int)moveSize];
+
+                                if (topCardMoved.IsBlack != destinationCard.IsBlack
+                                && destinationCard.Rank == topCardMoved.Rank + 1)
+                                {
+                                    foundLegalMove = true;
+                                    break;
+                                }
+                            }
+
+                            return foundLegalMove ? moveSize : 0;
+                        }
                     }
+                    else
+                    {
+                        if (destinationColumn.Count != 0)
+                        {
+                            var sourceCard = GetSourceCard();
 
+                            var destinationCard = destinationColumn.Last();
+
+                            return sourceCard.IsBlack != destinationCard.IsBlack
+                                && destinationCard.Rank == sourceCard.Rank + 1 ? 1u : 0u;
+                        }
+                        else
+                        {
+                            return 1;
+                        }
+                    }
                 }
 
-                return true;
+                return null;
             }
 
-            return SimpleChecks() && FoundationCheck() && ColumnCheck();
+            return SimpleChecks() ?? FoundationCheck() ?? ColumnCheck() ?? 1u;
         }
 
-        internal void MakeMove(Location source, Location destination)
+        internal void MakeMove(Location source, Location destination, uint moveSize)
         {
-            Card card;
+            if (moveSize == 0)
+            {
+                throw new ArgumentException($"moveSize '{moveSize}' is not valid");
+            }
+
+            if (moveSize > 1 && (!IsColumnLocation(source) || !IsColumnLocation(destination)))
+            {
+                throw new ArgumentException($"moveSize '{moveSize}' is impossible for source '{source}', destination '{destination}'");
+            }
+
+            List<Card> cards = new List<Card>(13);
 
             switch (source)
             {
@@ -250,8 +312,7 @@ namespace Core
                 case Location.Cell1:
                 case Location.Cell2:
                 case Location.Cell3:
-                    //todo: exception for when empty.
-                    card = this.cells[(int)source - (int)Location.Cell0];
+                    cards.Add(this.cells[(int)source - (int)Location.Cell0]);
                     this.cells[(int)source - (int)Location.Cell0] = null;
                     break;
 
@@ -263,10 +324,9 @@ namespace Core
                 case Location.Column5:
                 case Location.Column6:
                 case Location.Column7:
-                    //todo: exception for when empty.
                     var column = this.columns[(int)source - (int)Location.Column0];
-                    card = column.Last();
-                    column.RemoveAt(column.Count - 1);
+                    cards.AddRange(column.Skip(column.Count - (int)moveSize));
+                    column.RemoveRange(column.Count - (int)moveSize, (int)moveSize);
                     break;
 
                 case Location.Foundation:
@@ -282,9 +342,15 @@ namespace Core
                 case Location.Cell1:
                 case Location.Cell2:
                 case Location.Cell3:
-                    //todo: exception for when already occupied.
-                    this.cells[(int)destination - (int)Location.Cell0] = card;
-                    break;
+                    {
+                        if (cards.Count != 1)
+                        {
+                            throw new InvalidOperationException($"cells can only hold one card, attempting '{cards.Count}'");
+                        }
+
+                        this.cells[(int)destination - (int)Location.Cell0] = cards.First();
+                        break;
+                    }
 
                 case Location.Column0:
                 case Location.Column1:
@@ -294,17 +360,23 @@ namespace Core
                 case Location.Column5:
                 case Location.Column6:
                 case Location.Column7:
-                    //todo: exception for when not fitting.
                     var column = this.columns[(int)destination - (int)Location.Column0];
-                    column.Add(card);
+                    column.AddRange(cards);
                     break;
 
                 case Location.Foundation:
-                    //todo: exception for when not fitting.
-                    Stack<Card> foundation = this.FindFoundationFor(card.Suit);
+                    {
+                        if (cards.Count != 1)
+                        {
+                            throw new InvalidOperationException($"foundations accept one card at a time, attempting '{cards.Count}'");
+                        }
 
-                    foundation.Push(card);
-                    break;
+                        var card = cards.First();
+                        Stack<Card> foundation = this.FindFoundationFor(card.Suit);
+
+                        foundation.Push(card);
+                        break;
+                    }
 
                 default:
                     throw new Exception($"enum member '{destination}' missing in {nameof(MakeMove)}");
@@ -399,7 +471,7 @@ namespace Core
 
                 if (result)
                 {
-                    this.MakeMove(Location.Column0 + columnIndex, Location.Foundation);
+                    this.MakeMove(Location.Column0 + columnIndex, Location.Foundation, moveSize: 1);
                     return true;
                 }
             }
@@ -417,13 +489,25 @@ namespace Core
 
                 if (result)
                 {
-                    this.MakeMove(Location.Cell0 + cellIndex, Location.Foundation);
+                    this.MakeMove(Location.Cell0 + cellIndex, Location.Foundation, moveSize: 1);
                     return true;
                 }
             }
 
             return false;
 
+        }
+
+        private static bool IsColumnLocation(Location location)
+        {
+            return location == Location.Column0 ||
+                location == Location.Column1 ||
+                location == Location.Column2 ||
+                location == Location.Column3 ||
+                location == Location.Column4 ||
+                location == Location.Column5 ||
+                location == Location.Column6 ||
+                location == Location.Column7;
         }
 
         private static Game ParseFromRepresentation(string representation, Func<string, Card> parseFunc)
