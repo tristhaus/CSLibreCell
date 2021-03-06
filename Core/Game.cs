@@ -36,7 +36,9 @@ namespace Core
         internal Game(Game other)
         {
             this.id = other.id;
-            this.foundations = other.foundations.Select(x => new Stack<Card>(x)).ToArray();
+
+            // apparently, the reverse is by design of the C# Stack<>
+            this.foundations = other.foundations.Select(x => new Stack<Card>(x.Reverse())).ToArray();
             this.columns = other.columns.Select(x => new List<Card>(x)).ToArray();
             this.cells = other.cells.ToArray();
         }
@@ -71,7 +73,7 @@ namespace Core
         {
             get
             {
-                return this.foundations.Select(x => x.FirstOrDefault()).ToArray();
+                return this.foundations.Select(x => x.Count != 0 ? x.Peek() : null).ToArray();
             }
         }
 
@@ -199,7 +201,7 @@ namespace Core
                     }
                     else
                     {
-                        return foundation.Count != 0 && foundation.First().Rank + 1 == card.Rank;
+                        return foundation.Count != 0 && foundation.Peek().Rank + 1 == card.Rank;
                     }
                 }
 
@@ -317,14 +319,14 @@ namespace Core
         {
             bool Check(Card card)
             {
-                if (card?.Rank == Rank.Ace)
+                if (card.Rank == Rank.Ace)
                 {
                     return true;
                 }
                 else
                 {
                     var ownFoundation = this.FindFoundationFor(card.Suit);
-                    if (ownFoundation.FirstOrDefault()?.Rank == card.Rank - 1)
+                    if (ownFoundation.Count != 0 && ownFoundation.Peek().Rank == card.Rank - 1)
                     {
                         Stack<Card> otherFoundationSameColor;
 
@@ -350,7 +352,7 @@ namespace Core
                                 throw new Exception($"enum member '{card.Suit}' missing in {nameof(AutoMoveToFoundation)}");
                         }
 
-                        var otherFoundationSameColorRank = (int?)otherFoundationSameColor.FirstOrDefault()?.Rank ?? -1;
+                        var otherFoundationSameColorRank = otherFoundationSameColor.Count != 0 ? (int)otherFoundationSameColor.Peek().Rank : -1;
 
                         Stack<Card>[] foundationsOtherColor;
                         if (card.IsBlack)
@@ -371,7 +373,7 @@ namespace Core
                         }
 
                         var otherMinRank = foundationsOtherColor
-                            .Select(x => (int?)x.FirstOrDefault()?.Rank ?? -1)
+                            .Select(x => x.Count != 0 ? (int)x.Peek().Rank : -1)
                             .Min();
 
                         if (otherMinRank + 2 >= (int)card.Rank && otherFoundationSameColorRank + 1 >= otherMinRank)

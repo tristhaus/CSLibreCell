@@ -124,7 +124,7 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void GameCopyCtorShouldWorkCorrectly()
+        public void GameCopyCtorShouldYieldIndependentCopy()
         {
             // Arrange
             var game = new Game(20761);
@@ -141,7 +141,7 @@ namespace CoreTest
 
             // Act
             var copy = new Game(game);
-            
+
             game.MakeMove(Location.Column3, Location.Cell1);
             game.MakeMove(Location.Column3, Location.Foundation);
 
@@ -149,6 +149,34 @@ namespace CoreTest
 
             // Assert
             Assert.AreEqual(copyReference, copyAsciiRepresentation);
+        }
+
+        [TestMethod]
+        public void GameCopyCtorShouldWorkCorrectly()
+        {
+            // Arrange
+            var state = @" ..  ..  K♦  .. || 3♣  ..  ..  ..
+---------------------------------
+  4♦  T♥  J♣  9♦      3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥      6♦  2♠  3♦
+  4♥  8♣  3♥  6♥      5♦  A♠  2♦
+  8♦  5♣  9♣  4♣      Q♥  6♣  9♥
+  Q♣  A♦  T♦  K♣      A♥  8♠  T♠
+  7♣  2♥  T♣  J♥      Q♦  9♠    
+  7♠  J♠  4♠  7♦                
+  5♥                            
+  6♠                            
+  7♥                            ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+
+            var copy = new Game(game);
+
+            var copyUnicodeRepresentation = copy.UnicodeRepresentation;
+
+            // Assert
+            Assert.AreEqual(state, copyUnicodeRepresentation);
         }
 
         [TestMethod]
