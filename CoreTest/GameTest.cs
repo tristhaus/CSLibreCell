@@ -1337,5 +1337,116 @@ namespace CoreTest
             Assert.IsTrue(result);
             Assert.AreEqual(reference, representation);
         }
+
+        [TestMethod]
+        public void AutoMovesShouldLeadToWinning()
+        {
+            // Arrange
+            var state = @" 4♥  4♦  ..  .. || 5♣  5♠  3♥  3♦ 
+--------------------------------
+  K♣  8♠  K♠  K♥  K♦               
+  Q♥  7♦  Q♦  Q♣  Q♠               
+  J♠  6♠  J♣  J♥  J♦               
+  T♥  5♦  T♦  T♣  T♠               
+  9♠      9♣  9♦  9♥               
+  8♥      8♦  8♣                   
+  7♠      7♣  7♥                   
+  6♦      6♥  6♣                   
+              5♥                   ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+
+            while (game.AutoMoveToFoundation()) ;
+
+            var isWon = game.IsWon;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(isWon);
+        }
+
+        [TestMethod]
+        public void ThreeOfDiamondsShouldBeAutoMovedFromColumn()
+        {
+            // Arrange
+            var state = @" 8♥  3♠  K♣  6♥ || A♣  A♠  A♥  2♦
+ --------------------------------
+  T♦  J♥  4♣  9♥  T♥  9♦  5♣  Q♥
+  3♦  T♣  2♥  8♣  3♣  8♠  2♠  J♠
+      J♣  Q♦  7♥  K♦  7♦  K♠    
+      9♠  2♣  6♠  Q♣  6♣  5♠    
+      7♠  4♦  5♦  J♦  5♥  9♣    
+      7♣  4♥      T♠  4♠  8♦    
+      K♥  6♦          3♥        
+      Q♠                        ";
+
+            var reference = @" 8♥  3♠  K♣  6♥ || A♣  A♠  A♥  3♦
+---------------------------------
+  T♦  J♥  4♣  9♥  T♥  9♦  5♣  Q♥
+      T♣  2♥  8♣  3♣  8♠  2♠  J♠
+      J♣  Q♦  7♥  K♦  7♦  K♠    
+      9♠  2♣  6♠  Q♣  6♣  5♠    
+      7♠  4♦  5♦  J♦  5♥  9♣    
+      7♣  4♥      T♠  4♠  8♦    
+      K♥  6♦          3♥        
+      Q♠                        ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(reference, representation);
+        }
+
+        [TestMethod]
+        public void ThreeAndFourOfHeartsShouldBeAutoMoved()
+        {
+            // Arrange
+            var state = @" 3♥  T♠  8♦  T♥ || 3♣  3♠  2♥  A♦
+ --------------------------------
+  J♦  8♣  9♠  7♦  4♦  8♥  K♥  4♣
+  6♦  Q♥  7♠  6♠      7♣  Q♣  9♣
+  5♠  2♦  J♠          6♥      K♣
+  Q♠  5♥  J♥          5♣      K♠
+  9♦  K♦  T♣          4♥      Q♦
+          9♥                  J♣
+          8♠                  T♦
+          7♥                    
+          6♣                    
+          5♦                    
+          4♠                    
+          3♦                    ";
+
+            var reference = @" ..  T♠  8♦  T♥ || 3♣  3♠  4♥  A♦
+---------------------------------
+  J♦  8♣  9♠  7♦  4♦  8♥  K♥  4♣
+  6♦  Q♥  7♠  6♠      7♣  Q♣  9♣
+  5♠  2♦  J♠          6♥      K♣
+  Q♠  5♥  J♥          5♣      K♠
+  9♦  K♦  T♣                  Q♦
+          9♥                  J♣
+          8♠                  T♦
+          7♥                    
+          6♣                    
+          5♦                    
+          4♠                    
+          3♦                    ";
+
+            // Act
+            var game = Game.ParseFromUnicodeRepresentation(state);
+            var result1 = game.AutoMoveToFoundation();
+            var result2 = game.AutoMoveToFoundation();
+            var representation = game.UnicodeRepresentation;
+
+            // Assert
+            Assert.IsTrue(result1);
+            Assert.IsTrue(result2);
+            Assert.AreEqual(reference, representation);
+        }
     }
 }

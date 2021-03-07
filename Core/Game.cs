@@ -448,7 +448,8 @@ namespace Core
                             .Select(x => x.Count != 0 ? (int)x.Peek().Rank : -1)
                             .Min();
 
-                        if (otherMinRank + 2 >= (int)card.Rank && otherFoundationSameColorRank + 1 >= otherMinRank)
+                        var ownFoundationRank = (int)ownFoundation.Peek().Rank;
+                        if (ownFoundationRank - otherMinRank < 2 && (ownFoundationRank <= otherMinRank || otherMinRank - otherFoundationSameColorRank < 2))
                         {
                             return true;
                         }
