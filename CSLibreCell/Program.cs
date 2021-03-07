@@ -135,6 +135,7 @@ namespace CSLibreCell
             void HandleUndo()
             {
                 var refresh = Handler.ExecuteCommand(Handler.Command.Undo());
+                Source = null;
                 if (refresh)
                 {
                     RefreshGame();
