@@ -642,7 +642,7 @@ namespace Core
             }
 
             return GetCellRepresentations(cardRepresentation) + " ||" + GetFoundationRepresentations(cardRepresentation) + "\r\n"
-                + "---------------------------------\r\n"
+                + " --------------------------------\r\n"
                 + GetColummRepresentations(cardRepresentation);
         }
 
