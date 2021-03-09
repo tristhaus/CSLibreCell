@@ -48,13 +48,13 @@ namespace Core
                     return false;
 
                 case Operation.Undo:
-                    var oldGameStateExists = this.gameStates.Count > 0;
-                    if (oldGameStateExists)
+                    var oldGameStateIsAccessible = !this.game.IsWon && this.gameStates.Count > 0;
+                    if (oldGameStateIsAccessible)
                     {
                         this.game = this.gameStates.Pop();
                     }
 
-                    return oldGameStateExists;
+                    return oldGameStateIsAccessible;
 
                 default:
                     throw new Exception($"enum member '{command.Operation}' missing in {nameof(ExecuteCommand)}");
