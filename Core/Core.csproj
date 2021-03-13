@@ -46,6 +46,12 @@
     <Compile Include="Internal\Game.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="IGame.cs" />
+    <Compile Include="Internal\ByteConverter.cs" />
+    <Compile Include="Internal\IJourney.cs" />
+    <Compile Include="Internal\IJourneyRepository.cs" />
+    <Compile Include="Internal\Journey.cs" />
+    <Compile Include="Internal\JourneyRepository.cs" />
+    <Compile Include="Stage.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Internal\Prng.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

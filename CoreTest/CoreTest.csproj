@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardTest.cs" />
+    <Compile Include="ByteConverterTest.cs" />
     <Compile Include="GameTest.cs" />
     <Compile Include="HandlerTest.cs" />
     <Compile Include="PrngTest.cs" />

@@ -118,6 +118,20 @@ namespace Core.Internal
             return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
         }
 
+        internal static List<uint> GetWinnableGames(uint first, uint last)
+        {
+            var list = new List<uint>();
+            for (uint i = first; i <= last; i++)
+            {
+                if (!ImpossibleDeals.Contains(i))
+                {
+                    list.Add(i);
+                }
+            }
+
+            return list;
+        }
+
         internal uint GetLegalMoveSize(Location source, Location destination)
         {
             Card GetSourceCard()

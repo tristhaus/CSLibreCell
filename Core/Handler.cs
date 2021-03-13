@@ -6,10 +6,37 @@ namespace Core
 {
     public class Handler
     {
-        private Game game = null;
+        private static readonly Random Random = new Random();
+
+        private readonly IJourneyRepository journeyRepository;
         private readonly Stack<Game> gameStates = new Stack<Game>();
 
+        private IJourney journey = new Journey(Stage.NotStarted, new List<uint>(0));
+        private Game game = null;
+
+        public Handler()
+            : this(new JourneyRepository())
+        {
+        }
+
+        internal Handler(IJourneyRepository journeyRepository)
+        {
+            this.journeyRepository = journeyRepository;
+
+            this.journey = this.journeyRepository.Read();
+
+            if (this.journey == null)
+            {
+                this.journey = this.CreateNewJourney();
+                this.journeyRepository.Write(this.journey);
+            }
+        }
+
         public IGame Game => this.game;
+
+        public Stage Stage => this.journey?.Stage ?? Stage.NotStarted;
+
+        public uint? OpenGames => (uint?)this.journey?.Games?.Count;
 
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
@@ -28,6 +55,21 @@ namespace Core
                     this.gameStates.Clear();
                     return true;
 
+                case Operation.JourneyGame:
+                    if (this.journey.Games.Count != 0)
+                    {
+                        var id = this.journey.Games[Random.Next(this.journey.Games.Count)];
+
+                        this.game = new Game(id);
+                        while (this.game.AutoMoveToFoundation()) ;
+
+                        this.gameStates.Clear();
+                        return true;
+
+                    }
+
+                    return false;
+
                 case Operation.Move:
                     if (this.game?.IsWon == false)
                     {
@@ -39,6 +81,11 @@ namespace Core
                             this.game.MakeMove((Location)command.Source, (Location)command.Destination, moveSize);
 
                             while (this.game.AutoMoveToFoundation()) ;
+
+                            if (this.game.IsWon)
+                            {
+                                this.HandleJourney();
+                            }
 
                             return true;
                         }
@@ -60,9 +107,50 @@ namespace Core
             }
         }
 
+        private void HandleJourney()
+        {
+            if (this.journey.Games.Contains(this.game.Id))
+            {
+                this.journey.Games.Remove(this.game.Id);
+
+                if (this.journey.Games.Count == 0)
+                {
+                    switch (this.journey.Stage)
+                    {
+                        case Stage.First32000:
+                            {
+                                this.journey = new Journey(Stage.Second32000, Internal.Game.GetWinnableGames(32001, 64000));
+
+                                break;
+                            }
+
+                        case Stage.Second32000:
+                            {
+                                this.journey = new Journey(Stage.Finished, new List<uint>(0));
+
+                                break;
+                            }
+
+                        case Stage.NotStarted:
+                        case Stage.Finished:
+                        default:
+                            throw new Exception($"impossible journey state {this.journey.Stage} in {nameof(HandleJourney)}");
+                    }
+                }
+
+                this.journeyRepository.Write(this.journey);
+            }
+        }
+
+        private IJourney CreateNewJourney()
+        {
+            return new Journey(Stage.First32000, Internal.Game.GetWinnableGames(1, 32000));
+        }
+
         internal enum Operation
         {
             NewGame,
+            JourneyGame,
             Move,
             Undo,
         }
@@ -88,6 +176,16 @@ namespace Core
                 {
                     Operation = Operation.NewGame,
                     GameId = id,
+                };
+
+                return command;
+            }
+
+            public static Command JourneyGame()
+            {
+                var command = new Command
+                {
+                    Operation = Operation.JourneyGame,
                 };
 
                 return command;
