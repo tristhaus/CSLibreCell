@@ -8,6 +8,8 @@ namespace Core
 
         bool IsWon { get; }
 
+        bool IsImpossibleToWin { get; }
+
         IReadOnlyList<Card> Cells { get; }
         
         IReadOnlyList<Card> Foundations { get; }

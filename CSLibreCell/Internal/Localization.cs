@@ -6,7 +6,9 @@
         
         internal static string WindowTitle => "CSLibreCell";
 
-        public static string GameWon => "CONGRATULATIONS!";
+        internal static string GameWon => "CONGRATULATIONS!";
+
+        internal static string GameIsUnwinnable => "Game is known to be unwinnable";
 
         internal static class MenuBar
         {

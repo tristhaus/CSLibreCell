@@ -8,6 +8,8 @@ namespace Core
 {
     public class Game : IGame
     {
+        private static readonly uint[] ImpossibleDeals = { 11982, 146692, 186216, 455889, 495505, 512118, 517776, 781948 };
+
         /// <summary>
         /// The ID of the game, if known, zero otherwise.
         /// </summary>
@@ -24,6 +26,7 @@ namespace Core
         public Game(uint gameId)
         {
             this.id = gameId;
+            this.IsImpossibleToWin = ImpossibleDeals.Contains(this.id);
             this.InitGame(gameId);
         }
 
@@ -35,6 +38,7 @@ namespace Core
         internal Game(Game other)
         {
             this.id = other.id;
+            this.IsImpossibleToWin = other.IsImpossibleToWin;
 
             // apparently, the reverse is by design of the C# Stack<>
             this.foundations = other.foundations.Select(x => new Stack<Card>(x.Reverse())).ToArray();
@@ -59,6 +63,8 @@ namespace Core
                 return this.foundations.Sum(x => x.Count) == 52;
             }
         }
+
+        public bool IsImpossibleToWin { get; }
 
         public IReadOnlyList<Card> Cells
         {

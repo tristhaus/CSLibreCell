@@ -222,8 +222,12 @@ namespace CSLibreCell
 
         private static void StartRandomGame()
         {
-            var id = Random.Next(1, 65537);
-            StartGame(Convert.ToUInt32(id));
+            bool isWinnable;
+            do
+            {
+                var id = Random.Next(1, 65537);
+                isWinnable = StartGame(Convert.ToUInt32(id));
+            } while (!isWinnable);
         }
 
         private static void ShowChooseDialog()
@@ -245,7 +249,7 @@ namespace CSLibreCell
                 Application.RequestStop();
                 if (uint.TryParse(entry.Text.ToString(), out var id))
                 {
-                    StartGame(id);
+                    var _ = StartGame(id);
                 }
             };
             dialog.AddButton(ok);
@@ -253,15 +257,25 @@ namespace CSLibreCell
             Application.Run(dialog);
         }
 
-        private static void StartGame(uint id)
+        /// <summary>
+        /// Starts the game with the given ID and indicates whether the game is known to be winnable.
+        /// </summary>
+        /// <param name="id">The ID of the game to start.</param>
+        /// <returns><c>true</c> if the game is winnable.</returns>
+        private static bool StartGame(uint id)
         {
             var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
+
+            var gameIsWinnable = !Handler.Game.IsImpossibleToWin;
+
             if (refresh)
             {
                 AddGameIdToWindow();
 
                 RefreshGame();
             }
+
+            return gameIsWinnable;
 
             void AddGameIdToWindow()
             {
@@ -376,7 +390,7 @@ namespace CSLibreCell
 
             var game = Handler.Game;
 
-            MessageLabel.Text = game.IsWon ? Localization.GameWon : string.Empty;
+            MessageLabel.Text = game.IsWon ? Localization.GameWon : game.IsImpossibleToWin ? Localization.GameIsUnwinnable : string.Empty;
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {

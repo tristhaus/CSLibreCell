@@ -12,8 +12,6 @@ namespace Core
 
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
-        //TODO list of unwinnable games
-
         /// <summary>
         /// Attempts to execute the given command.
         /// </summary>
