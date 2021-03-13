@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Internal;
+using System;
 using System.Collections.Generic;
 
 namespace Core

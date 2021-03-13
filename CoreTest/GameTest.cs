@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoreTest

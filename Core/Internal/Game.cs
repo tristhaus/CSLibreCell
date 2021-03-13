@@ -1,12 +1,11 @@
-﻿using Core.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Core
+namespace Core.Internal
 {
-    public class Game : IGame
+    internal class Game : IGame
     {
         private static readonly uint[] ImpossibleDeals = { 11982, 146692, 186216, 455889, 495505, 512118, 517776, 781948 };
 
