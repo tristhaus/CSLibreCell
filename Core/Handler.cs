@@ -29,7 +29,7 @@ namespace Core
                     return true;
 
                 case Operation.Move:
-                    if (!this.game.IsWon)
+                    if (this.game?.IsWon == false)
                     {
                         var moveSize = this.game.GetLegalMoveSize((Location)command.Source, (Location)command.Destination);
 
