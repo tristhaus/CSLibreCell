@@ -222,12 +222,26 @@ namespace CSLibreCell
 
         private static void StartRandomGame()
         {
-            bool isWinnable;
-            do
+            if (Handler.Stage == Stage.NotStarted || Handler.Stage == Stage.Finished)
             {
-                var id = Random.Next(1, 65537);
-                isWinnable = StartGame(Convert.ToUInt32(id));
-            } while (!isWinnable);
+                bool isWinnable;
+                do
+                {
+                    var id = Random.Next(1, 65537);
+                    isWinnable = StartGame(Convert.ToUInt32(id));
+                } while (!isWinnable);
+            }
+            else
+            {
+                var refresh = Handler.ExecuteCommand(Handler.Command.JourneyGame());
+
+                if (refresh)
+                {
+                    AddGameIdToWindow();
+
+                    RefreshGame();
+                }
+            }
         }
 
         private static void ShowChooseDialog()
@@ -276,12 +290,6 @@ namespace CSLibreCell
             }
 
             return gameIsWinnable;
-
-            void AddGameIdToWindow()
-            {
-                var idRep = $" #{Handler.Game.Id}";
-                Win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
-            }
         }
 
         private static void ShowHelpDialog()
@@ -370,7 +378,70 @@ namespace CSLibreCell
 
         private static void ShowStatusDialog()
         {
-            throw new NotImplementedException(); //TODO
+            string content;
+
+            switch (Handler.Stage)
+            {
+                case Stage.NotStarted:
+                    {
+                        content = string.Format(Localization.StatusDialog.ContentTemplate, Localization.StatusDialog.NotStarted, string.Empty);
+                        break;
+                    }
+
+                case Stage.First32000:
+                    {
+                        var progress = Handler.OpenGames != null
+                            ? string.Format(Localization.StatusDialog.ProgressTemplate, 32000 - Handler.OpenGames)
+                            : throw new Exception($"inconsistent state {Handler.Stage}");
+                        content = string.Format(Localization.StatusDialog.ContentTemplate, Localization.StatusDialog.FirstStage, progress);
+                        break;
+                    }
+
+                case Stage.Second32000:
+                    {
+                        var progress = Handler.OpenGames != null
+                            ? string.Format(Localization.StatusDialog.ProgressTemplate, 32000 - Handler.OpenGames)
+                            : throw new Exception($"inconsistent state {Handler.Stage}");
+                        content = string.Format(Localization.StatusDialog.ContentTemplate, Localization.StatusDialog.SecondStage, progress);
+                        break;
+                    }
+
+                case Stage.Finished:
+                    {
+                        content = string.Format(Localization.StatusDialog.ContentTemplate, Localization.StatusDialog.Finished, string.Empty);
+                        break;
+                    }
+
+                default:
+                    throw new Exception($"enum member '{Handler.Stage}' missing in {nameof(ShowStatusDialog)}");
+            }
+
+            var dialog = new Dialog(Localization.StatusDialog.Title, 0, 0);
+
+            var label = new Label
+            {
+                X = 1,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                Text = content,
+            };
+            dialog.Add(label);
+
+            var ok = new Button(Localization.OK, true);
+            ok.Clicked += () =>
+            {
+                Application.RequestStop();
+            };
+            dialog.AddButton(ok);
+
+            Application.Run(dialog);
+        }
+
+        private static void AddGameIdToWindow()
+        {
+            var idRep = $" #{Handler.Game.Id}";
+            Win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
         }
 
         private static void RefreshGame()

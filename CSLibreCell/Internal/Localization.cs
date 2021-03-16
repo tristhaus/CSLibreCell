@@ -42,5 +42,22 @@
 
             internal static string ContentTemplate => "CSLibreCell - A FreeCell implementation.\r\n\r\nThis help: {18}\r\nStatus: {19} \r\nNew random game: {20}\r\nChoose Game: {21}\r\n\r\nMaking moves: specify source and destination using:\r\n{0} {1} {2} {3} || {4} {5} {6} {7}\r\n {8} {9} {10} {11} {12} {13} {14} {15}\r\n\r\nCancel move: {16}\r\nUnlimited undo: {17}";
         }
+
+        internal static class StatusDialog
+        {
+            internal static string Title => "Status";
+
+            internal static string ContentTemplate => "{0}\r\n{1}";
+
+            internal static string NotStarted => "Journey not started.";
+            
+            internal static string FirstStage => "First stage of journey: 1-32000";
+            
+            internal static string SecondStage => "Second stage of journey: 32001-64000";
+            
+            internal static string Finished => "Journey 1-64000 completed!";
+
+            internal static string ProgressTemplate => "{0} of 32000 games in stage completed";
+        }
     }
 }
