@@ -2,6 +2,7 @@
 using CSLibreCell.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terminal.Gui;
 
 namespace CSLibreCell
@@ -11,6 +12,7 @@ namespace CSLibreCell
         private static readonly Random Random = new Random();
         private static readonly Handler Handler = new Handler();
         private static Location? Source = null;
+        private static Location? Highlight = null;
 
         private static readonly List<Label> CellLabels = new List<Label>(4);
         private static readonly List<Label> FoundationLabels = new List<Label>(4);
@@ -21,6 +23,8 @@ namespace CSLibreCell
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
         private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
+        private static readonly Terminal.Gui.Attribute BlackHighlightAttribute = new Terminal.Gui.Attribute(Color.Black, Color.Gray);
+        private static readonly Terminal.Gui.Attribute RedHighlightAttribute = new Terminal.Gui.Attribute(Color.Red, Color.Gray);
         private static readonly ColorScheme BlackColorScheme = new ColorScheme
         {
             Normal = BlackAttribute,
@@ -30,6 +34,16 @@ namespace CSLibreCell
         {
             Normal = RedAttribute,
             Focus = RedAttribute,
+        };
+        private static readonly ColorScheme BlackHighlightColorScheme = new ColorScheme
+        {
+            Normal = BlackHighlightAttribute,
+            Focus = BlackHighlightAttribute,
+        };
+        private static readonly ColorScheme RedHighlightColorScheme = new ColorScheme
+        {
+            Normal = RedHighlightAttribute,
+            Focus = RedHighlightAttribute,
         };
 
         static void Main(string[] args)
@@ -42,22 +56,55 @@ namespace CSLibreCell
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
-                CellLabels.Add(new Label("..") { X = 1 + cellIndex * 4, Y = 1, Width = 2, Height = 1 });
+                var cellLabel = new Label(" .. ") { X = cellIndex * 4, Y = 1, Width = 4, Height = 1 };
+                var copy = cellIndex;
+                cellLabel.Clicked += () =>
+                {
+                    if ((Source != null && Handler.Game != null && Handler.Game.Cells[copy] == null) || Source == null && Handler.Game?.Cells[copy] != null)
+                    {
+                        HandleLocation(Location.Cell0 + copy, highlight: true);
+                        RefreshGame();
+                    }
+                };
+
+                CellLabels.Add(cellLabel);
             }
 
             allGameLabels.AddRange(CellLabels);
 
             for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
             {
-                FoundationLabels.Add(new Label("..") { X = 19 + foundationIndex * 4, Y = 1, Width = 2, Height = 1 });
+                var foundationLabel = new Label(" .. ") { X = 18 + foundationIndex * 4, Y = 1, Width = 4, Height = 1 };
+                foundationLabel.Clicked += () =>
+                {
+                    if (Source != null)
+                    {
+                        HandleLocation(Location.Foundation, highlight: true);
+                        RefreshGame();
+                    }
+                };
+
+                FoundationLabels.Add(foundationLabel);
             }
 
             allGameLabels.AddRange(FoundationLabels);
 
+            var dividerLabel = new Label("||") { X = 16, Y = 1, Width = 2, Height = 1 };
+            dividerLabel.Clicked += () =>
+            {
+                HandleCancel();
+            };
+
+            var lineLabel = new Label("--------------------------------") { X = 1, Y = 2, Width = 32, Height = 1 };
+            lineLabel.Clicked += () =>
+            {
+                HandleCancel();
+            };
+
             StaticLabels = new List<Label>
             {
-                new Label("||") { X = 16, Y = 1, Width = 2, Height = 1 },
-                new Label("--------------------------------") { X = 1, Y = 2, Width = 32, Height = 1 },
+                dividerLabel,
+                lineLabel,
             };
 
             allGameLabels.AddRange(StaticLabels);
@@ -71,9 +118,23 @@ namespace CSLibreCell
                 var list = new List<Label>(19);
                 for (int i = 0; i < 19; i++)
                 {
-                    var label = new Label("  ") { X = 2 + columnIndex * 4, Y = 3 + i, Width = 2, Height = 1 };
+                    var label = new Label("    ") { X = 1 + columnIndex * 4, Y = 3 + i, Width = 4, Height = 1 };
+
                     list.Add(label);
                     allGameLabels.Add(label);
+                }
+
+                foreach (var label in list)
+                {
+                    var copy = columnIndex;
+                    label.Clicked += () =>
+                    {
+                        if ((Source == null && Handler.Game != null && Handler.Game.Columns[copy].Count > 0) || Source != null)
+                        {
+                            HandleLocation(Location.Column0 + copy, highlight: true);
+                            RefreshGame();
+                        }
+                    };
                 }
 
                 ColumnLabels.Add(list);
@@ -115,33 +176,6 @@ namespace CSLibreCell
 
         private static void Top_KeyPress(View.KeyEventEventArgs obj)
         {
-            void HandleLocation(Location location)
-            {
-                if (Source == null)
-                {
-                    Source = location;
-                }
-                else
-                {
-                    var refresh = Handler.ExecuteCommand(Handler.Command.Move((Location)Source, location));
-                    Source = null;
-                    if (refresh)
-                    {
-                        RefreshGame();
-                    }
-                }
-            }
-
-            void HandleUndo()
-            {
-                var refresh = Handler.ExecuteCommand(Handler.Command.Undo());
-                Source = null;
-                if (refresh)
-                {
-                    RefreshGame();
-                }
-            }
-
             if (obj.KeyEvent.Key == Configuration.Keys.Menu.RandomGame)
             {
                 StartRandomGame();
@@ -160,7 +194,7 @@ namespace CSLibreCell
             }
             else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cancel)
             {
-                Source = null;
+                HandleCancel();
             }
             else if (obj.KeyEvent.Key == Configuration.Keys.Game.Undo)
             {
@@ -218,6 +252,43 @@ namespace CSLibreCell
             {
                 HandleLocation(Location.Foundation);
             }
+        }
+
+        private static void HandleLocation(Location location, bool highlight = false)
+        {
+            if (Handler.Game?.IsWon == false)
+            {
+                if (Source == null)
+                {
+                    if (highlight)
+                    {
+                        Highlight = location;
+                    }
+
+                    Source = location;
+                }
+                else
+                {
+                    var _ = Handler.ExecuteCommand(Handler.Command.Move((Location)Source, location));
+                    Source = null;
+                    Highlight = null;
+                    RefreshGame();
+                }
+            }
+        }
+
+        private static void HandleCancel()
+        {
+            Highlight = null;
+            Source = null;
+        }
+
+        private static void HandleUndo()
+        {
+            var _ = Handler.ExecuteCommand(Handler.Command.Undo());
+            Highlight = null;
+            Source = null;
+            RefreshGame();
         }
 
         private static void StartRandomGame()
@@ -446,31 +517,36 @@ namespace CSLibreCell
 
         private static void RefreshGame()
         {
-            void ApplyCardToLabel(Label label, Card card, string empty)
+            void ApplyCardToLabel(Label label, Card card, string empty, bool highlight)
             {
-                label.Text = card?.UnicodeRepresentation ?? empty;
+                label.Text = " " + (card?.UnicodeRepresentation ?? empty) + " ";
                 if (card?.IsBlack == false)
                 {
-                    label.ColorScheme = RedColorScheme;
+                    label.ColorScheme = highlight ? RedHighlightColorScheme : RedColorScheme;
                 }
                 else
                 {
-                    label.ColorScheme = BlackColorScheme;
+                    label.ColorScheme = highlight ? BlackHighlightColorScheme : BlackColorScheme;
                 }
             }
 
             var game = Handler.Game;
+            if (game == null)
+            {
+                return;
+            }
 
             MessageLabel.Text = game.IsWon ? Localization.GameWon : game.IsImpossibleToWin ? Localization.GameIsUnwinnable : string.Empty;
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
-                ApplyCardToLabel(CellLabels[cellIndex], game.Cells[cellIndex], empty: "..");
+                bool highlight = Highlight != null && Highlight == Location.Cell0 + cellIndex;
+                ApplyCardToLabel(CellLabels[cellIndex], game.Cells[cellIndex], empty: "..", highlight);
             }
 
             for (int foundationIndex = 0; foundationIndex < 4; foundationIndex++)
             {
-                ApplyCardToLabel(FoundationLabels[foundationIndex], game.Foundations[foundationIndex], empty: "..");
+                ApplyCardToLabel(FoundationLabels[foundationIndex], game.Foundations[foundationIndex], empty: "..", highlight: false);
             }
 
             for (int columnIndex = 0; columnIndex < 8; columnIndex++)
@@ -480,14 +556,15 @@ namespace CSLibreCell
 
                 var labels = ColumnLabels[columnIndex];
 
+                bool highlight = Highlight != null && Highlight == Location.Column0 + columnIndex;
                 for (int lineIndex = 0; lineIndex < length; lineIndex++)
                 {
-                    ApplyCardToLabel(labels[lineIndex], column[lineIndex], empty: string.Empty);
+                    ApplyCardToLabel(labels[lineIndex], column[lineIndex], empty: string.Empty, highlight);
                 }
 
                 for (int lineIndex = length; lineIndex < 19; lineIndex++)
                 {
-                    ApplyCardToLabel(labels[lineIndex], card: null, empty: string.Empty);
+                    ApplyCardToLabel(labels[lineIndex], card: null, empty: string.Empty, highlight: false);
                 }
             }
         }
