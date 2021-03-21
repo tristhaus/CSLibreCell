@@ -1,5 +1,8 @@
 ﻿namespace Core
 {
+    /// <summary>
+    /// The locations available in a standard 8x4 game.
+    /// </summary>
     public enum Location
     {
         Cell0 = 0,

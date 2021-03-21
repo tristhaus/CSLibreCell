@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Core
 {
+    /// <summary>
+    /// A handler for the journey, <see cref="IGame"/>, and commands there-to.
+    /// </summary>
     public class Handler
     {
         private static readonly Random Random = new Random();
@@ -14,11 +17,18 @@ namespace Core
         private IJourney journey = new Journey(Stage.NotStarted, new List<uint>(0));
         private Game game = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Handler"/> class using the proper journey repository.
+        /// </summary>
         public Handler()
             : this(new JourneyRepository())
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Handler"/> class using the supplied journey repository.
+        /// </summary>
+        /// <param name="journeyRepository">The supplied journey repository.</param>
         internal Handler(IJourneyRepository journeyRepository)
         {
             this.journeyRepository = journeyRepository;
@@ -32,12 +42,24 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Gets the contained game, if present.
+        /// </summary>
         public IGame Game => this.game;
 
+        /// <summary>
+        /// Gets the stage of the journey.
+        /// </summary>
         public Stage Stage => this.journey?.Stage ?? Stage.NotStarted;
 
+        /// <summary>
+        /// Gets the count of yet unsolved games, if present.
+        /// </summary>
         public uint? OpenGames => (uint?)this.journey?.Games?.Count;
 
+        /// <summary>
+        /// Gets the Unicode representation of the game, if one is present.
+        /// </summary>
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
         /// <summary>
@@ -147,6 +169,7 @@ namespace Core
             return new Journey(Stage.First32000, Internal.Game.GetWinnableGames(1, 32000));
         }
 
+        // todo: remove, change to concrete methods.
         internal enum Operation
         {
             NewGame,
@@ -155,6 +178,7 @@ namespace Core
             Undo,
         }
 
+        // todo: remove, change to concrete methods. Do so in a smart way.
         public class Command
         {
             internal Operation Operation { get; private set; }

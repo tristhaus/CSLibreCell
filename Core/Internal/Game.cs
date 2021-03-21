@@ -5,8 +5,14 @@ using System.Text;
 
 namespace Core.Internal
 {
+    /// <summary>
+    /// Represents a standard 8x4 FreeCell game.
+    /// </summary>
     internal class Game : IGame
     {
+        /// <summary>
+        /// The list of impossible MS FreeCell games, according to the internet.
+        /// </summary>
         private static readonly uint[] ImpossibleDeals = { 11982, 146692, 186216, 455889, 495505, 512118, 517776, 781948 };
 
         /// <summary>
@@ -50,11 +56,10 @@ namespace Core.Internal
             this.id = 0;
         }
 
+        /// <inheritdoc/>
         public uint Id => this.id;
 
-        /// <summary>
-        /// Gets a value indicating whether the game is won.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsWon
         {
             get
@@ -63,8 +68,10 @@ namespace Core.Internal
             }
         }
 
+        /// <inheritdoc/>
         public bool IsImpossibleToWin { get; }
 
+        /// <inheritdoc/>
         public IReadOnlyList<Card> Cells
         {
             get
@@ -73,6 +80,7 @@ namespace Core.Internal
             }
         }
 
+        /// <inheritdoc/>
         public IReadOnlyList<Card> Foundations
         {
             get
@@ -81,6 +89,7 @@ namespace Core.Internal
             }
         }
 
+        /// <inheritdoc/>
         public IReadOnlyList<IReadOnlyList<Card>> Columns
         {
             get
@@ -90,7 +99,7 @@ namespace Core.Internal
         }
 
         /// <summary>
-        /// Gets the AsciiRepresentation of the game.
+        /// Gets the ASCII representation of the game.
         /// </summary>
         /// <seealso cref="Card.AsciiRepresentation"/>
         internal string AsciiRepresentation
@@ -102,7 +111,7 @@ namespace Core.Internal
         }
 
         /// <summary>
-        /// Gets the UnicodeRepresentation of the game.
+        /// Gets the Unicode representation of the game.
         /// </summary>
         /// <seealso cref="Card.UnicodeRepresentation"/>
         internal string UnicodeRepresentation
@@ -113,11 +122,22 @@ namespace Core.Internal
             }
         }
 
+        /// <summary>
+        /// Creates a game in a given state from the corresponding Unicode representation.
+        /// </summary>
+        /// <param name="unicodeRepresentation">The Unicode representation</param>
+        /// <returns>The corresponding game.</returns>
         internal static Game ParseFromUnicodeRepresentation(string unicodeRepresentation)
         {
             return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
         }
 
+        /// <summary>
+        /// Gets the list of IDs of winnable games between <paramref name="first"/> and <paramref name="last"/>, inclusive.
+        /// </summary>
+        /// <param name="first">The first ID to check for winnability.</param>
+        /// <param name="last">The last ID to check for winnability.</param>
+        /// <returns>A list of IDs of winnable games, possibly empty.</returns>
         internal static List<uint> GetWinnableGames(uint first, uint last)
         {
             var list = new List<uint>();
@@ -132,6 +152,14 @@ namespace Core.Internal
             return list;
         }
 
+        /// <summary>
+        /// Determines the size of a legal move from <paramref name="source"/> to <paramref name="destination"/>,
+        /// which is zero in case of an illegal move.
+        /// </summary>
+        /// <param name="source">The source of the move.</param>
+        /// <param name="destination">The destination of the move.</param>
+        /// <returns>The number of cards that can legally be moved.</returns>
+        /// <remarks><c>internal</c> for testability.</remarks>
         internal uint GetLegalMoveSize(Location source, Location destination)
         {
             Card GetSourceCard()
@@ -311,6 +339,13 @@ namespace Core.Internal
             return SimpleChecks() ?? FoundationCheck() ?? ColumnCheck() ?? 1u;
         }
 
+        /// <summary>
+        /// Moves the given number of cards from <paramref name="source"/> to <paramref name="destination"/>, ignoring legality.
+        /// </summary>
+        /// <param name="source">The source of the move.</param>
+        /// <param name="destination">The destination of the move.</param>
+        /// <param name="moveSize">The number of cards to move.</param>
+        /// <remarks><c>internal</c> for testability.</remarks>
         internal void MakeMove(Location source, Location destination, uint moveSize)
         {
             if (moveSize == 0)

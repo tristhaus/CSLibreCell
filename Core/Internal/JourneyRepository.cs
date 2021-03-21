@@ -5,16 +5,23 @@ using System.Linq;
 
 namespace Core.Internal
 {
+    /// <summary>
+    /// Disk-based repository for a journey.
+    /// </summary>
     internal class JourneyRepository : IJourneyRepository
     {
         private const string Filename = "journey.cslibrecell";
         private readonly DirectoryInfo appDir;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JourneyRepository"/> class.
+        /// </summary>
         internal JourneyRepository()
         {
             this.appDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CSLibreCell"));
         }
 
+        /// <inheritdoc/>
         public IJourney Read()
         {
             var filepath = Path.Combine(appDir.FullName, Filename);
@@ -54,6 +61,7 @@ namespace Core.Internal
             return new Journey(stage, games);
         }
 
+        /// <inheritdoc/>
         public void Write(IJourney journey)
         {
             if (!this.appDir.Exists)

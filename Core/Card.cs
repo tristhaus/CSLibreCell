@@ -87,7 +87,7 @@ namespace Core
         public bool IsBlack => this.Suit == Suit.Clubs || this.Suit == Suit.Spades;
 
         /// <summary>
-        /// Gets the AsciiRepresentation of the card.
+        /// Gets the ASCII representation of the card.
         /// </summary>
         /// <remarks>
         /// Suits are denoted C, S, H, D. Ranks are denoted A, 2-9, T, J, Q, K.
@@ -100,6 +100,12 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Gets the Unicode representation of the card.
+        /// </summary>
+        /// <remarks>
+        /// Suits are denoted by their symbols. Ranks are denoted A, 2-9, T, J, Q, K.
+        /// </remarks>
         public string UnicodeRepresentation
         {
             get
@@ -108,6 +114,7 @@ namespace Core
             }
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object other)
         {
             if(!(other is Card otherCard))
@@ -118,16 +125,23 @@ namespace Core
             return this.Equals(otherCard);
         }
 
+        /// <summary>
+        /// Indicates whether this instance and the specified card are equal.
+        /// </summary>
+        /// <param name="other">The other instance to compare.</param>
+        /// <returns><c>true</c> if the <paramref name="other"/> card and this card represent the same.</returns>
         public bool Equals(Card other)
         {
             return this.Id == other.Id;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return this.Id.GetHashCode();
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return this.Id.ToString();
