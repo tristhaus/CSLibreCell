@@ -2,7 +2,6 @@
 using CSLibreCell.Internal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terminal.Gui;
 
 namespace CSLibreCell
@@ -154,10 +153,15 @@ namespace CSLibreCell
 
             top.Add(Win);
 
+
             var menu = new MenuBar(new MenuBarItem[] {
             new MenuBarItem (Localization.MenuBar.Game, new MenuItem [] {
                 new MenuItem (Localization.MenuBar.Random, Localization.MenuBar.RandomHint, StartRandomGame),
                 new MenuItem (Localization.MenuBar.Choose, Localization.MenuBar.ChooseHint, ShowChooseDialog),
+                new MenuItem(Localization.MenuBar.Undo, string.Empty, HandleUndo)
+                {
+                    CanExecute = () => Handler.CanUndo
+                },
                 new MenuItem (Localization.MenuBar.Quit, string.Empty, () => { top.Running = false; })
             }),
             new MenuBarItem (Localization.MenuBar.Other, new MenuItem [] {

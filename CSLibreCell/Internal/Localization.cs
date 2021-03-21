@@ -22,6 +22,8 @@
 
             internal static string ChooseHint => "Choose a new game to start";
 
+            internal static string Undo => "Undo last move";
+
             internal static string Quit => "_Quit";
 
             internal static string Other => "_?";

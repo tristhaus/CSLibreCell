@@ -256,6 +256,39 @@ namespace CoreTest
             Assert.AreEqual(0u, handler.OpenGames);
         }
 
+        [TestMethod]
+        public void GameHandlerShouldCorrectlyIndicateCanUndo()
+        {
+            // Arrange
+            List<uint> games = new List<uint>
+            {
+                32100,
+            };
+            var memoryJourney = new MemoryJourney(Stage.Second32000, games);
+            var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
+
+            // Act
+            var handler = new Handler(journeyMemoryRepository);
+            var result1 = handler.CanUndo;
+            handler.ExecuteCommand(Handler.Command.NewGame(32100));
+            var result2 = handler.CanUndo;
+            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column5));
+            var result3 = handler.CanUndo;
+            handler.ExecuteCommand(Handler.Command.Undo());
+            var result4 = handler.CanUndo;
+            PlayGame32100(handler);
+            var isWon = handler.Game.IsWon;
+            var result5 = handler.CanUndo;
+
+            // Assert
+            Assert.IsFalse(result1);
+            Assert.IsFalse(result2);
+            Assert.IsTrue(result3);
+            Assert.IsFalse(result4);
+            Assert.IsTrue(isWon);
+            Assert.IsFalse(result5);
+        }
+
         /// <summary>
         /// Helper method that will execute the moves for game #100.
         /// </summary>

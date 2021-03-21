@@ -58,6 +58,11 @@ namespace Core
         public uint? OpenGames => (uint?)this.journey?.Games?.Count;
 
         /// <summary>
+        /// Gets a value indicating whether there is a previous move that can be undone.
+        /// </summary>
+        public bool CanUndo => gameStates.Count > 0 && !this.game.IsWon;
+
+        /// <summary>
         /// Gets the Unicode representation of the game, if one is present.
         /// </summary>
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
