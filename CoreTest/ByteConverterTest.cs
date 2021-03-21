@@ -19,6 +19,8 @@ namespace CoreTest
             // Assert
             Assert.AreEqual(bytes[0], 0b_0000_0101);
             Assert.AreEqual(bytes[1], 0b_1010_1111);
+            Assert.AreEqual(bytes[2], 0b0);
+            Assert.AreEqual(bytes[3], 0b0);
         }
 
         [TestMethod]

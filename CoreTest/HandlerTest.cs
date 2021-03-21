@@ -256,6 +256,10 @@ namespace CoreTest
             Assert.AreEqual(0u, handler.OpenGames);
         }
 
+        /// <summary>
+        /// Helper method that will execute the moves for game #100.
+        /// </summary>
+        /// <param name="handler">The handler to pass the moves to.</param>
         private static void PlayGame100(Handler handler)
         {
             handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column1));
@@ -292,6 +296,10 @@ namespace CoreTest
             handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Cell0));
         }
 
+        /// <summary>
+        /// Helper method that will execute the moves for game #32100.
+        /// </summary>
+        /// <param name="handler">The handler to pass the moves to.</param>
         private static void PlayGame32100(Handler handler)
         {
             handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column5));
@@ -338,6 +346,9 @@ namespace CoreTest
             handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell0));
         }
         
+        /// <summary>
+        /// In-memory implementation for testing and side-channel checking.
+        /// </summary>
         private class JourneyMemoryRepository : IJourneyRepository
         {
             private IJourney journey;
@@ -364,14 +375,11 @@ namespace CoreTest
                 this.HasCalledWrite = true;
                 this.journey = journey;
             }
-
-            internal void ResetFlags()
-            {
-                this.HasCalledRead = false;
-                this.HasCalledWrite = false;
-            }
         }
 
+        /// <summary>
+        /// In-memory implementation for testing and side-channel checking.
+        /// </summary>
         private class MemoryJourney : IJourney
         {
             private readonly List<uint> games;
