@@ -45,7 +45,7 @@ namespace CSLibreCell
             Focus = RedHighlightAttribute,
         };
 
-        static void Main(string[] args)
+        static void Main()
         {
             Application.Init();
             var top = Application.Top;
