@@ -23,7 +23,7 @@ namespace CoreTest
             var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
 
             var handler = new Handler(journeyMemoryRepository);
-            handler.ExecuteCommand(Handler.Command.NewGame(30828));
+            handler.NewGame(30828);
 
             var reference1 = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -47,9 +47,9 @@ namespace CoreTest
 
             // Act
             var state1 = handler.UnicodeGameRepresentation;
-            var refresh1 = handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column5));
-            var refresh2 = handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell1));
-            var refresh3 = handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell1));
+            var refresh1 = handler.Move(Location.Column1, Location.Column5);
+            var refresh2 = handler.Move(Location.Column2, Location.Cell1);
+            var refresh3 = handler.Move(Location.Column2, Location.Cell1);
             var state2 = handler.UnicodeGameRepresentation;
 
             // Assert
@@ -74,7 +74,7 @@ namespace CoreTest
             var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
 
             var handler = new Handler(journeyMemoryRepository);
-            handler.ExecuteCommand(Handler.Command.NewGame(30828));
+            handler.NewGame(30828);
 
             var reference1 = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -98,12 +98,12 @@ namespace CoreTest
 
             // Act
             var state1 = handler.UnicodeGameRepresentation;
-            var refresh1 = handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column5));
-            var refresh2 = handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell1));
+            var refresh1 = handler.Move(Location.Column1, Location.Column5);
+            var refresh2 = handler.Move(Location.Column2, Location.Cell1);
             var state2 = handler.UnicodeGameRepresentation;
-            var refresh3 = handler.ExecuteCommand(Handler.Command.Undo());
-            var refresh4 = handler.ExecuteCommand(Handler.Command.Undo());
-            var refresh5 = handler.ExecuteCommand(Handler.Command.Undo());
+            var refresh3 = handler.Undo();
+            var refresh4 = handler.Undo();
+            var refresh5 = handler.Undo();
             var state3 = handler.UnicodeGameRepresentation;
 
             // Assert
@@ -133,7 +133,7 @@ namespace CoreTest
             var handler = new Handler(journeyMemoryRepository);
 
             // Act
-            handler.ExecuteCommand(Handler.Command.NewGame(100));
+            handler.NewGame(100);
             PlayGame100(handler);
 
             // Assert
@@ -156,7 +156,7 @@ namespace CoreTest
             var handler = new Handler(journeyMemoryRepository);
 
             // Act
-            handler.ExecuteCommand(Handler.Command.NewGame(32100));
+            handler.NewGame(32100);
             PlayGame32100(handler);
 
             // Assert
@@ -177,7 +177,7 @@ namespace CoreTest
             var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
 
             var handler = new Handler(journeyMemoryRepository);
-            handler.ExecuteCommand(Handler.Command.JourneyGame());
+            handler.JourneyGame();
 
             // Act
             var id = handler.Game.Id;
@@ -219,7 +219,7 @@ namespace CoreTest
 
             // Act
             var handler = new Handler(journeyMemoryRepository);
-            handler.ExecuteCommand(Handler.Command.NewGame(100));
+            handler.NewGame(100);
             PlayGame100(handler);
 
             // Assert
@@ -244,7 +244,7 @@ namespace CoreTest
 
             // Act
             var handler = new Handler(journeyMemoryRepository);
-            handler.ExecuteCommand(Handler.Command.NewGame(32100));
+            handler.NewGame(32100);
             PlayGame32100(handler);
 
             // Assert
@@ -270,11 +270,11 @@ namespace CoreTest
             // Act
             var handler = new Handler(journeyMemoryRepository);
             var result1 = handler.CanUndo;
-            handler.ExecuteCommand(Handler.Command.NewGame(32100));
+            handler.NewGame(32100);
             var result2 = handler.CanUndo;
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column5));
+            handler.Move(Location.Column0, Location.Column5);
             var result3 = handler.CanUndo;
-            handler.ExecuteCommand(Handler.Command.Undo());
+            handler.Undo();
             var result4 = handler.CanUndo;
             PlayGame32100(handler);
             var isWon = handler.Game.IsWon;
@@ -295,38 +295,38 @@ namespace CoreTest
         /// <param name="handler">The handler to pass the moves to.</param>
         private static void PlayGame100(Handler handler)
         {
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column1));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Cell0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Foundation));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Cell1));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Cell2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Cell3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Foundation));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Column5));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Cell2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell2, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell3, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Cell0));
+            handler.Move(Location.Column6, Location.Column1);
+            handler.Move(Location.Column6, Location.Cell0);
+            handler.Move(Location.Column0, Location.Column6);
+            handler.Move(Location.Column4, Location.Column6);
+            handler.Move(Location.Column6, Location.Column4);
+            handler.Move(Location.Column0, Location.Foundation);
+            handler.Move(Location.Column0, Location.Column4);
+            handler.Move(Location.Column0, Location.Column6);
+            handler.Move(Location.Column0, Location.Cell1);
+            handler.Move(Location.Column6, Location.Column0);
+            handler.Move(Location.Column6, Location.Column0);
+            handler.Move(Location.Column4, Location.Column0);
+            handler.Move(Location.Column7, Location.Cell2);
+            handler.Move(Location.Column1, Location.Column6);
+            handler.Move(Location.Column7, Location.Cell3);
+            handler.Move(Location.Column5, Location.Column2);
+            handler.Move(Location.Column5, Location.Foundation);
+            handler.Move(Location.Column3, Location.Column5);
+            handler.Move(Location.Column3, Location.Cell2);
+            handler.Move(Location.Column4, Location.Column7);
+            handler.Move(Location.Column3, Location.Column7);
+            handler.Move(Location.Column4, Location.Column7);
+            handler.Move(Location.Column5, Location.Column7);
+            handler.Move(Location.Cell2, Location.Column3);
+            handler.Move(Location.Cell3, Location.Column3);
+            handler.Move(Location.Column2, Location.Column4);
+            handler.Move(Location.Column2, Location.Cell2);
+            handler.Move(Location.Column2, Location.Column6);
+            handler.Move(Location.Column2, Location.Column3);
+            handler.Move(Location.Column2, Location.Cell3);
+            handler.Move(Location.Column5, Location.Column2);
+            handler.Move(Location.Column1, Location.Cell0);
         }
 
         /// <summary>
@@ -335,48 +335,48 @@ namespace CoreTest
         /// <param name="handler">The handler to pass the moves to.</param>
         private static void PlayGame32100(Handler handler)
         {
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column5));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column5));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell0, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Column2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Cell0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Cell1));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Cell2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column7, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Foundation));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column5));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Cell3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell0, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column1, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column3, Location.Column7));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column6, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column0, Location.Column5));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell1, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column1));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Column3));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column4, Location.Cell0));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Cell2, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column4));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Cell1));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Column6));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column5, Location.Cell2));
-            handler.ExecuteCommand(Handler.Command.Move(Location.Column2, Location.Cell0));
+            handler.Move(Location.Column0, Location.Column5);
+            handler.Move(Location.Column0, Location.Column4);
+            handler.Move(Location.Column2, Location.Column6);
+            handler.Move(Location.Column2, Location.Cell0);
+            handler.Move(Location.Column2, Location.Column5);
+            handler.Move(Location.Column2, Location.Column0);
+            handler.Move(Location.Cell0, Location.Column2);
+            handler.Move(Location.Column0, Location.Column2);
+            handler.Move(Location.Column0, Location.Column2);
+            handler.Move(Location.Column3, Location.Column2);
+            handler.Move(Location.Column3, Location.Column0);
+            handler.Move(Location.Column3, Location.Cell0);
+            handler.Move(Location.Column3, Location.Cell1);
+            handler.Move(Location.Column7, Location.Cell2);
+            handler.Move(Location.Column6, Location.Column3);
+            handler.Move(Location.Column7, Location.Column6);
+            handler.Move(Location.Column7, Location.Column4);
+            handler.Move(Location.Column7, Location.Column0);
+            handler.Move(Location.Column7, Location.Column4);
+            handler.Move(Location.Column1, Location.Column0);
+            handler.Move(Location.Column1, Location.Column7);
+            handler.Move(Location.Column1, Location.Foundation);
+            handler.Move(Location.Column1, Location.Column5);
+            handler.Move(Location.Column1, Location.Cell3);
+            handler.Move(Location.Cell0, Location.Column7);
+            handler.Move(Location.Column1, Location.Column7);
+            handler.Move(Location.Column5, Location.Column7);
+            handler.Move(Location.Column3, Location.Column7);
+            handler.Move(Location.Column6, Location.Column3);
+            handler.Move(Location.Column0, Location.Column5);
+            handler.Move(Location.Cell1, Location.Column0);
+            handler.Move(Location.Column4, Location.Column0);
+            handler.Move(Location.Column4, Location.Column6);
+            handler.Move(Location.Column4, Location.Column1);
+            handler.Move(Location.Column4, Location.Column3);
+            handler.Move(Location.Column4, Location.Cell0);
+            handler.Move(Location.Cell2, Location.Column4);
+            handler.Move(Location.Column5, Location.Column4);
+            handler.Move(Location.Column5, Location.Cell1);
+            handler.Move(Location.Column5, Location.Column6);
+            handler.Move(Location.Column5, Location.Cell2);
+            handler.Move(Location.Column2, Location.Cell0);
         }
         
         /// <summary>

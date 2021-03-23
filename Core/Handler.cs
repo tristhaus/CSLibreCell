@@ -68,70 +68,77 @@ namespace Core
         internal string UnicodeGameRepresentation => this.game?.UnicodeRepresentation ?? string.Empty;
 
         /// <summary>
-        /// Attempts to execute the given command.
+        /// Starts a new game defined by its ID.
         /// </summary>
-        /// <returns>Value indicating whether the client should reload <see cref="this.UnicodeGameRepresentation"/>.</returns>
-        public bool ExecuteCommand(Command command)
+        /// <param name="gameId">The ID of the game to start.</param>
+        /// <returns>Value indicating whether the client should reload game information.</returns>
+        public bool NewGame(uint gameId)
         {
-            switch (command.Operation)
+            this.InitAndPrepareGame(gameId);
+            return true;
+        }
+
+        /// <summary>
+        /// Starts a new game from the journey, if any are available.
+        /// </summary>
+        /// <returns>Value indicating whether the client should reload game information.</returns>
+        public bool JourneyGame()
+        {
+            if (this.journey.Games.Count != 0)
             {
-                case Operation.NewGame:
-                    this.game = new Game((uint)command.GameId);
+                var gameId = this.journey.Games[Random.Next(this.journey.Games.Count)];
+
+                this.InitAndPrepareGame(gameId);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to make a move in the current <see cref="Game"/> indicated by the locations.
+        /// </summary>
+        /// <param name="source">The source location of the move.</param>
+        /// <param name="destination">The destination location of the move.</param>
+        /// <returns>Value indicating whether the client should reload game information.</returns>
+        public bool Move(Location source, Location destination)
+        {
+            if (this.game?.IsWon == false)
+            {
+                var moveSize = this.game.GetLegalMoveSize(source, destination);
+
+                if (moveSize > 0)
+                {
+                    this.gameStates.Push(new Game(this.game));
+                    this.game.MakeMove(source, destination, moveSize);
+
                     while (this.game.AutoMoveToFoundation()) ;
 
-                    this.gameStates.Clear();
+                    if (this.game.IsWon)
+                    {
+                        this.HandleJourney();
+                    }
+
                     return true;
-
-                case Operation.JourneyGame:
-                    if (this.journey.Games.Count != 0)
-                    {
-                        var id = this.journey.Games[Random.Next(this.journey.Games.Count)];
-
-                        this.game = new Game(id);
-                        while (this.game.AutoMoveToFoundation()) ;
-
-                        this.gameStates.Clear();
-                        return true;
-
-                    }
-
-                    return false;
-
-                case Operation.Move:
-                    if (this.game?.IsWon == false)
-                    {
-                        var moveSize = this.game.GetLegalMoveSize((Location)command.Source, (Location)command.Destination);
-
-                        if (moveSize > 0)
-                        {
-                            this.gameStates.Push(new Game(this.game));
-                            this.game.MakeMove((Location)command.Source, (Location)command.Destination, moveSize);
-
-                            while (this.game.AutoMoveToFoundation()) ;
-
-                            if (this.game.IsWon)
-                            {
-                                this.HandleJourney();
-                            }
-
-                            return true;
-                        }
-                    }
-
-                    return false;
-
-                case Operation.Undo:
-                    var oldGameStateIsAccessible = !this.game.IsWon && this.gameStates.Count > 0;
-                    if (oldGameStateIsAccessible)
-                    {
-                        this.game = this.gameStates.Pop();
-                    }
-
-                    return oldGameStateIsAccessible;
-
-                default:
-                    throw new Exception($"enum member '{command.Operation}' missing in {nameof(ExecuteCommand)}");
+                }
             }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to undo the last move in the current <see cref="Game"/>.
+        /// </summary>
+        /// <returns>Value indicating whether the client should reload game information.</returns>
+        public bool Undo()
+        {
+            var oldGameStateIsAccessible = !this.game.IsWon && this.gameStates.Count > 0;
+            if (oldGameStateIsAccessible)
+            {
+                this.game = this.gameStates.Pop();
+            }
+
+            return oldGameStateIsAccessible;
         }
 
         private void HandleJourney()
@@ -174,73 +181,12 @@ namespace Core
             return new Journey(Stage.First32000, Internal.Game.GetWinnableGames(1, 32000));
         }
 
-        // todo: remove, change to concrete methods.
-        internal enum Operation
+        private void InitAndPrepareGame(uint gameId)
         {
-            NewGame,
-            JourneyGame,
-            Move,
-            Undo,
-        }
+            this.game = new Game(gameId);
+            while (this.game.AutoMoveToFoundation()) ;
 
-        // todo: remove, change to concrete methods. Do so in a smart way.
-        public class Command
-        {
-            internal Operation Operation { get; private set; }
-
-            internal uint? GameId { get; private set; }
-
-            internal Location? Source { get; private set; }
-
-            internal Location? Destination { get; private set; }
-
-            public static Command NewGame(uint id)
-            {
-                if (id == 0)
-                {
-                    throw new ArgumentException("");
-                }
-
-                var command = new Command
-                {
-                    Operation = Operation.NewGame,
-                    GameId = id,
-                };
-
-                return command;
-            }
-
-            public static Command JourneyGame()
-            {
-                var command = new Command
-                {
-                    Operation = Operation.JourneyGame,
-                };
-
-                return command;
-            }
-
-            public static Command Move(Location source, Location destination)
-            {
-                var command = new Command
-                {
-                    Operation = Operation.Move,
-                    Source = source,
-                    Destination = destination,
-                };
-
-                return command;
-            }
-
-            public static Command Undo()
-            {
-                var command = new Command
-                {
-                    Operation = Operation.Undo,
-                };
-
-                return command;
-            }
+            this.gameStates.Clear();
         }
     }
 }

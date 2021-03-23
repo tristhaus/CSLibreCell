@@ -273,7 +273,7 @@ namespace CSLibreCell
                 }
                 else
                 {
-                    var _ = Handler.ExecuteCommand(Handler.Command.Move((Location)Source, location));
+                    var _ = Handler.Move((Location)Source, location);
                     Source = null;
                     Highlight = null;
                     RefreshGame();
@@ -289,7 +289,7 @@ namespace CSLibreCell
 
         private static void HandleUndo()
         {
-            var _ = Handler.ExecuteCommand(Handler.Command.Undo());
+            var _ = Handler.Undo();
             Highlight = null;
             Source = null;
             RefreshGame();
@@ -308,7 +308,7 @@ namespace CSLibreCell
             }
             else
             {
-                var refresh = Handler.ExecuteCommand(Handler.Command.JourneyGame());
+                var refresh = Handler.JourneyGame();
 
                 if (refresh)
                 {
@@ -353,7 +353,7 @@ namespace CSLibreCell
         /// <returns><c>true</c> if the game is winnable.</returns>
         private static bool StartGame(uint id)
         {
-            var refresh = Handler.ExecuteCommand(Handler.Command.NewGame(id));
+            var refresh = Handler.NewGame(id);
 
             var gameIsWinnable = !Handler.Game.IsImpossibleToWin;
 
