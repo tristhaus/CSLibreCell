@@ -2,64 +2,64 @@
 {
     internal static class Localization
     {
-        internal static string OK => "OK";
-        
-        internal static string WindowTitle => "CSLibreCell";
+        internal static string OK => Resources.ResourceManager.GetString("OK");
 
-        internal static string GameWon => "CONGRATULATIONS!";
+        internal static string WindowTitle => Resources.ResourceManager.GetString("WindowTitle");
 
-        internal static string GameIsUnwinnable => "Game is known to be unwinnable";
+        internal static string GameWonMessage => Resources.ResourceManager.GetString("GameWonMessage");
+
+        internal static string GameIsUnwinnable => Resources.ResourceManager.GetString("GameIsUnwinnable");
 
         internal static class MenuBar
         {
-            internal static string Game => "_Game";
+            internal static string Game => Resources.ResourceManager.GetString("MenuBar_Game");
 
-            internal static string Random => "_Random";
+            internal static string Random => Resources.ResourceManager.GetString("MenuBar_Random");
 
-            internal static string RandomHint => "Start new random game";
+            internal static string RandomHint => Resources.ResourceManager.GetString("MenuBar_RandomHint");
 
-            internal static string Choose => "_Choose";
+            internal static string Choose => Resources.ResourceManager.GetString("MenuBar_Choose");
 
-            internal static string ChooseHint => "Choose a new game to start";
+            internal static string ChooseHint => Resources.ResourceManager.GetString("MenuBar_ChooseHint");
 
-            internal static string Undo => "Undo last move";
+            internal static string Undo => Resources.ResourceManager.GetString("MenuBar_Undo");
 
-            internal static string Quit => "_Quit";
+            internal static string Quit => Resources.ResourceManager.GetString("MenuBar_Quit");
 
-            internal static string Other => "_?";
+            internal static string Other => Resources.ResourceManager.GetString("MenuBar_Other");
 
-            internal static string Help => "_Help";
+            internal static string Help => Resources.ResourceManager.GetString("MenuBar_Help");
 
-            internal static string Status => "_Status";
+            internal static string Status => Resources.ResourceManager.GetString("MenuBar_Status");
         }
 
         internal static class ChooseDialog
         {
-            internal static string Title => "Choose game by ID";
+            internal static string Title => Resources.ResourceManager.GetString("ChooseDialog_Title");
         }
 
         internal static class HelpDialog
         {
-            internal static string Title => "Help";
+            internal static string Title => Resources.ResourceManager.GetString("HelpDialog_Title");
 
-            internal static string ContentTemplate => "CSLibreCell - A FreeCell implementation.\r\n\r\nThis help: {18}\r\nStatus: {19} \r\nNew random game: {20}\r\nChoose Game: {21}\r\n\r\nMaking moves: specify source and destination using:\r\n{0} {1} {2} {3} || {4} {5} {6} {7}\r\n {8} {9} {10} {11} {12} {13} {14} {15}\r\n\r\nCancel move: {16}\r\nUnlimited undo: {17}";
+            internal static string ContentTemplate => Resources.ResourceManager.GetString("HelpDialog_ContentTemplate");
         }
 
         internal static class StatusDialog
         {
-            internal static string Title => "Status";
+            internal static string Title => Resources.ResourceManager.GetString("StatusDialog_Title");
 
-            internal static string ContentTemplate => "{0}\r\n{1}";
+            internal static string ContentTemplate => Resources.ResourceManager.GetString("StatusDialog_ContentTemplate");
 
-            internal static string NotStarted => "Journey not started.";
-            
-            internal static string FirstStage => "First stage of journey: 1-32000";
-            
-            internal static string SecondStage => "Second stage of journey: 32001-64000";
-            
-            internal static string Finished => "Journey 1-64000 completed!";
+            internal static string NotStarted => Resources.ResourceManager.GetString("StatusDialog_NotStarted");
 
-            internal static string ProgressTemplate => "{0} of 32000 games in stage completed";
+            internal static string FirstStage => Resources.ResourceManager.GetString("StatusDialog_FirstStage");
+
+            internal static string SecondStage => Resources.ResourceManager.GetString("StatusDialog_SecondStage");
+
+            internal static string Finished => Resources.ResourceManager.GetString("StatusDialog_Finished");
+
+            internal static string ProgressTemplate => Resources.ResourceManager.GetString("StatusDialog_ProgressTemplate");
         }
     }
 }

@@ -540,7 +540,7 @@ namespace CSLibreCell
                 return;
             }
 
-            MessageLabel.Text = game.IsWon ? Localization.GameWon : game.IsImpossibleToWin ? Localization.GameIsUnwinnable : string.Empty;
+            MessageLabel.Text = game.IsWon ? Localization.GameWonMessage : game.IsImpossibleToWin ? Localization.GameIsUnwinnable : string.Empty;
 
             for (int cellIndex = 0; cellIndex < 4; cellIndex++)
             {
