@@ -274,25 +274,20 @@ namespace CSLibreCell
                 else
                 {
                     var _ = Handler.Move((Location)Source, location);
-                    Source = null;
-                    Highlight = null;
-                    RefreshGame();
+                    ResetMoveDisplay();
                 }
             }
         }
 
         private static void HandleCancel()
         {
-            Highlight = null;
-            Source = null;
+            ResetMoveDisplay();
         }
 
         private static void HandleUndo()
         {
             var _ = Handler.Undo();
-            Highlight = null;
-            Source = null;
-            RefreshGame();
+            ResetMoveDisplay();
         }
 
         private static void StartRandomGame()
@@ -517,6 +512,13 @@ namespace CSLibreCell
         {
             var idRep = $" #{Handler.Game.Id}";
             Win.Title = $"{ Localization.WindowTitle} {idRep.PadLeft(20, '─')}";
+        }
+
+        private static void ResetMoveDisplay()
+        {
+            Source = null;
+            Highlight = null;
+            RefreshGame();
         }
 
         private static void RefreshGame()
