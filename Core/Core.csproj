@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
+    <Compile Include="IJourneyConfiguration.cs" />
     <Compile Include="Internal\Game.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="IGame.cs" />

@@ -20,8 +20,9 @@ namespace Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Handler"/> class using the proper journey repository.
         /// </summary>
-        public Handler()
-            : this(new JourneyRepository())
+        /// <param name="journeyConfiguration">The configuration concerning the storage of the journey.</param>
+        public Handler(IJourneyConfiguration journeyConfiguration)
+            : this(new JourneyRepository(journeyConfiguration))
         {
         }
 

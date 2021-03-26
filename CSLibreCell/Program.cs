@@ -9,7 +9,7 @@ namespace CSLibreCell
     class Program
     {
         private static readonly Random Random = new Random();
-        private static readonly Handler Handler = new Handler();
+        private static readonly Handler Handler;
         private static Location? Source = null;
         private static Location? Highlight = null;
 
@@ -44,6 +44,14 @@ namespace CSLibreCell
             Normal = RedHighlightAttribute,
             Focus = RedHighlightAttribute,
         };
+
+        static Program()
+        {
+            var configLoader = new ConfigurationLoader();
+            var config = configLoader.Read();
+
+            Handler = new Handler(config.JourneyConfig);
+        }
 
         static void Main()
         {

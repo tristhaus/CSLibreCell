@@ -1,9 +1,44 @@
-﻿using Terminal.Gui;
+﻿using Core;
+using System.IO;
+using Terminal.Gui;
 
 namespace CSLibreCell.Internal
 {
-    internal static class Configuration
+    /// <summary>
+    /// Collection of effective configuration options.
+    /// </summary>
+    internal class Configuration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Configuration"/> class.
+        /// </summary>
+        /// <param name="journeyPath">The info concerning the storage location for the journey.</param>
+        public Configuration(FileInfo journeyPath)
+        {
+            this.JourneyConfig = new Journey(journeyPath);
+        }
+
+        /// <summary>
+        /// Gets the configuration concerning the journey.
+        /// </summary>
+        public Journey JourneyConfig { get; }
+
+        /// <inheritdoc/>
+        internal class Journey : IJourneyConfiguration
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Journey"/> class.
+            /// </summary>
+            /// <param name="path">The info concerning the storage location.</param>
+            public Journey(FileInfo path)
+            {
+                this.Path = path;
+            }
+
+            /// <inheritdoc/>
+            public FileInfo Path { get; }
+        }
+
         internal static class Keys
         {
             internal static class Menu
@@ -15,7 +50,6 @@ namespace CSLibreCell.Internal
                 internal static Key Help => Key.F1;
 
                 internal static Key Status => Key.F12;
-
             }
 
             internal static class Game

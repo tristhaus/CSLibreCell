@@ -10,31 +10,28 @@ namespace Core.Internal
     /// </summary>
     internal class JourneyRepository : IJourneyRepository
     {
-        private const string Filename = "journey.cslibrecell";
-        private readonly DirectoryInfo appDir;
+        private readonly IJourneyConfiguration journeyConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JourneyRepository"/> class.
         /// </summary>
-        internal JourneyRepository()
+        /// <param name="journeyConfiguration">The configuration concerning the storage of the journey.</param>
+        internal JourneyRepository(IJourneyConfiguration journeyConfiguration)
         {
-            this.appDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CSLibreCell"));
+            this.journeyConfiguration = journeyConfiguration;
         }
 
         /// <inheritdoc/>
         public IJourney Read()
         {
-            var filepath = Path.Combine(appDir.FullName, Filename);
-            var fileinfo = new FileInfo(filepath);
-
-            if (!fileinfo.Exists)
+            if (!journeyConfiguration.Path.Exists)
             {
                 return null;
             }
 
             byte[] buffer;
 
-            using (var fs = new FileStream(fileinfo.FullName, FileMode.Open))
+            using (var fs = new FileStream(journeyConfiguration.Path.FullName, FileMode.Open))
             {
                 buffer = new byte[fs.Length];
                 fs.Read(buffer, 0, buffer.Length);
@@ -64,14 +61,12 @@ namespace Core.Internal
         /// <inheritdoc/>
         public void Write(IJourney journey)
         {
-            if (!this.appDir.Exists)
+            if (!this.journeyConfiguration.Path.Directory.Exists)
             {
-                this.appDir.Create();
+                this.journeyConfiguration.Path.Directory.Create();
             }
 
-            var filepath = Path.Combine(appDir.FullName, Filename);
-
-            using (var fs = new FileStream(filepath, FileMode.Create))
+            using (var fs = new FileStream(this.journeyConfiguration.Path.FullName, FileMode.Create))
             {
                 uint stage = Convert.ToUInt32((int)journey.Stage);
                 var stageBytes = ByteConverter.UintToLSBBytes(stage);
