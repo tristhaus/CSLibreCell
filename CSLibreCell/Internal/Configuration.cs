@@ -1,4 +1,5 @@
 ﻿using Core;
+using System.Globalization;
 using System.IO;
 using Terminal.Gui;
 
@@ -13,15 +14,21 @@ namespace CSLibreCell.Internal
         /// Initializes a new instance of the <see cref="Configuration"/> class.
         /// </summary>
         /// <param name="journeyPath">The info concerning the storage location for the journey.</param>
-        public Configuration(FileInfo journeyPath)
+        public Configuration(FileInfo journeyPath, CultureInfo uiCulture)
         {
             this.JourneyConfig = new Journey(journeyPath);
+            this.UiCulture = uiCulture;
         }
 
         /// <summary>
         /// Gets the configuration concerning the journey.
         /// </summary>
         public Journey JourneyConfig { get; }
+
+        /// <summary>
+        /// Gets the configured UI culture. Can be <c>null</c>.
+        /// </summary>
+        public CultureInfo UiCulture { get; }
 
         /// <inheritdoc/>
         internal class Journey : IJourneyConfiguration

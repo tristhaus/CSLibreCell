@@ -182,6 +182,9 @@ Unbegrenztes Rückgängig: {17}</value>
   <data name="HelpDialog_Title" xml:space="preserve">
     <value>Hilfe</value>
   </data>
+  <data name="HelpDialog_DebugLog" xml:space="preserve">
+    <value>Debug Log</value>
+  </data>
   <data name="StatusDialog_Title" xml:space="preserve">
     <value>Status</value>
   </data>

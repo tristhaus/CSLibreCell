@@ -2,6 +2,7 @@
 using CSLibreCell.Internal;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Terminal.Gui;
 
 namespace CSLibreCell
@@ -19,6 +20,7 @@ namespace CSLibreCell
         private static List<Label> StaticLabels;
         private static Label MessageLabel;
         private static Window Win;
+        private static List<string> ConfigLog;
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
         private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
@@ -48,7 +50,14 @@ namespace CSLibreCell
         static Program()
         {
             var configLoader = new ConfigurationLoader();
-            var config = configLoader.Read();
+            var (config, log) = configLoader.Read();
+            ConfigLog = log;
+
+            if (config.UiCulture != null)
+            {
+                CultureInfo.CurrentCulture = config.UiCulture;
+                CultureInfo.CurrentUICulture = config.UiCulture;
+            }
 
             Handler = new Handler(config.JourneyConfig);
         }
@@ -444,12 +453,42 @@ namespace CSLibreCell
             };
             dialog.Add(label);
 
-            var ok = new Button(Localization.OK, true);
+            var ok = new Button(Localization.OK, is_default: true);
             ok.Clicked += () =>
             {
                 Application.RequestStop();
             };
             dialog.AddButton(ok);
+
+            var debugLog = new Button(Localization.HelpDialog.DebugLog, is_default: false);
+            debugLog.Clicked += () =>
+            {
+                var debugDialog = new Dialog(Localization.HelpDialog.DebugLog, 0, 0);
+
+                var textView = new TextView()
+                {
+                    Text = string.Join("\n", ConfigLog),
+                    ReadOnly = true,
+                    X = 1,
+                    Y = 1,
+                    Width = Dim.Fill(),
+                    Height = Dim.Fill(),
+                };
+                
+                debugDialog.Add(textView);
+
+                var closeDebugLog = new Button(Localization.OK, is_default: true);
+                closeDebugLog.Clicked += () =>
+                {
+                    debugDialog.Running = false;
+                };
+                
+                debugDialog.AddButton(closeDebugLog);
+
+                Application.Run(debugDialog);
+            };
+
+            dialog.AddButton(debugLog);
 
             Application.Run(dialog);
         }

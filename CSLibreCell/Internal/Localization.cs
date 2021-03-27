@@ -1,4 +1,6 @@
-﻿namespace CSLibreCell.Internal
+﻿using NStack;
+
+namespace CSLibreCell.Internal
 {
     internal static class Localization
     {
@@ -43,6 +45,8 @@
             internal static string Title => Resources.ResourceManager.GetString("HelpDialog_Title");
 
             internal static string ContentTemplate => Resources.ResourceManager.GetString("HelpDialog_ContentTemplate");
+
+            internal static string DebugLog => Resources.ResourceManager.GetString("HelpDialog_DebugLog");
         }
 
         internal static class StatusDialog
