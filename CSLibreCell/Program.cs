@@ -14,13 +14,15 @@ namespace CSLibreCell
         private static Location? Source = null;
         private static Location? Highlight = null;
 
+        private static readonly Configuration Config;
+        private static readonly List<string> ConfigLog;
+
         private static readonly List<Label> CellLabels = new List<Label>(4);
         private static readonly List<Label> FoundationLabels = new List<Label>(4);
         private static readonly List<List<Label>> ColumnLabels = new List<List<Label>>(8);
         private static List<Label> StaticLabels;
         private static Label MessageLabel;
         private static Window Win;
-        private static List<string> ConfigLog;
 
         private static readonly Terminal.Gui.Attribute BlackAttribute = new Terminal.Gui.Attribute(Color.Black, Color.White);
         private static readonly Terminal.Gui.Attribute RedAttribute = new Terminal.Gui.Attribute(Color.Red, Color.White);
@@ -50,16 +52,15 @@ namespace CSLibreCell
         static Program()
         {
             var configLoader = new ConfigurationLoader();
-            var (config, log) = configLoader.Read();
-            ConfigLog = log;
+            (Config, ConfigLog) = configLoader.Read();
 
-            if (config.UiCulture != null)
+            if (Config.UiCulture != null)
             {
-                CultureInfo.CurrentCulture = config.UiCulture;
-                CultureInfo.CurrentUICulture = config.UiCulture;
+                CultureInfo.CurrentCulture = Config.UiCulture;
+                CultureInfo.CurrentUICulture = Config.UiCulture;
             }
 
-            Handler = new Handler(config.JourneyConfig);
+            Handler = new Handler(Config.JourneyConfig);
         }
 
         static void Main()
@@ -197,79 +198,79 @@ namespace CSLibreCell
 
         private static void Top_KeyPress(View.KeyEventEventArgs obj)
         {
-            if (obj.KeyEvent.Key == Configuration.Keys.Menu.RandomGame)
+            if (obj.KeyEvent.Key == Config.KeysConfig.Menu.RandomGame)
             {
                 StartRandomGame();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Menu.ChooseGame)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Menu.ChooseGame)
             {
                 ShowChooseDialog();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Menu.Help)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Menu.Help)
             {
                 ShowHelpDialog();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Menu.Status)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Menu.Status)
             {
                 ShowStatusDialog();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cancel)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Cancel)
             {
                 HandleCancel();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Undo)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Undo)
             {
                 HandleUndo();
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cell0)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Cell0)
             {
                 HandleLocation(Location.Cell0);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cell1)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Cell1)
             {
                 HandleLocation(Location.Cell1);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cell2)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Cell2)
             {
                 HandleLocation(Location.Cell2);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Cell3)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Cell3)
             {
                 HandleLocation(Location.Cell3);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column0)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column0)
             {
                 HandleLocation(Location.Column0);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column1)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column1)
             {
                 HandleLocation(Location.Column1);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column2)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column2)
             {
                 HandleLocation(Location.Column2);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column3)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column3)
             {
                 HandleLocation(Location.Column3);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column4)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column4)
             {
                 HandleLocation(Location.Column4);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column5)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column5)
             {
                 HandleLocation(Location.Column5);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column6)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column6)
             {
                 HandleLocation(Location.Column6);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Column7)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Column7)
             {
                 HandleLocation(Location.Column7);
             }
-            else if (obj.KeyEvent.Key == Configuration.Keys.Game.Foundation0 || obj.KeyEvent.Key == Configuration.Keys.Game.Foundation1 || obj.KeyEvent.Key == Configuration.Keys.Game.Foundation2 || obj.KeyEvent.Key == Configuration.Keys.Game.Foundation3)
+            else if (obj.KeyEvent.Key == Config.KeysConfig.Game.Foundation0 || obj.KeyEvent.Key == Config.KeysConfig.Game.Foundation1 || obj.KeyEvent.Key == Config.KeysConfig.Game.Foundation2 || obj.KeyEvent.Key == Config.KeysConfig.Game.Foundation3)
             {
                 HandleLocation(Location.Foundation);
             }
@@ -418,28 +419,28 @@ namespace CSLibreCell
             }
 
             var content = string.Format(Localization.HelpDialog.ContentTemplate,
-                FormatKey(Configuration.Keys.Game.Cell0),
-                FormatKey(Configuration.Keys.Game.Cell1),
-                FormatKey(Configuration.Keys.Game.Cell2),
-                FormatKey(Configuration.Keys.Game.Cell3),
-                FormatKey(Configuration.Keys.Game.Foundation0),
-                FormatKey(Configuration.Keys.Game.Foundation1),
-                FormatKey(Configuration.Keys.Game.Foundation2),
-                FormatKey(Configuration.Keys.Game.Foundation3),
-                FormatKey(Configuration.Keys.Game.Column0),
-                FormatKey(Configuration.Keys.Game.Column1),
-                FormatKey(Configuration.Keys.Game.Column2),
-                FormatKey(Configuration.Keys.Game.Column3),
-                FormatKey(Configuration.Keys.Game.Column4),
-                FormatKey(Configuration.Keys.Game.Column5),
-                FormatKey(Configuration.Keys.Game.Column6),
-                FormatKey(Configuration.Keys.Game.Column7),
-                FormatKey(Configuration.Keys.Game.Cancel),
-                FormatKey(Configuration.Keys.Game.Undo),
-                FormatKey(Configuration.Keys.Menu.Help),
-                FormatKey(Configuration.Keys.Menu.Status),
-                FormatKey(Configuration.Keys.Menu.RandomGame),
-                FormatKey(Configuration.Keys.Menu.ChooseGame));
+                FormatKey(Config.KeysConfig.Game.Cell0),
+                FormatKey(Config.KeysConfig.Game.Cell1),
+                FormatKey(Config.KeysConfig.Game.Cell2),
+                FormatKey(Config.KeysConfig.Game.Cell3),
+                FormatKey(Config.KeysConfig.Game.Foundation0),
+                FormatKey(Config.KeysConfig.Game.Foundation1),
+                FormatKey(Config.KeysConfig.Game.Foundation2),
+                FormatKey(Config.KeysConfig.Game.Foundation3),
+                FormatKey(Config.KeysConfig.Game.Column0),
+                FormatKey(Config.KeysConfig.Game.Column1),
+                FormatKey(Config.KeysConfig.Game.Column2),
+                FormatKey(Config.KeysConfig.Game.Column3),
+                FormatKey(Config.KeysConfig.Game.Column4),
+                FormatKey(Config.KeysConfig.Game.Column5),
+                FormatKey(Config.KeysConfig.Game.Column6),
+                FormatKey(Config.KeysConfig.Game.Column7),
+                FormatKey(Config.KeysConfig.Game.Cancel),
+                FormatKey(Config.KeysConfig.Game.Undo),
+                FormatKey(Config.KeysConfig.Menu.Help),
+                FormatKey(Config.KeysConfig.Menu.Status),
+                FormatKey(Config.KeysConfig.Menu.RandomGame),
+                FormatKey(Config.KeysConfig.Menu.ChooseGame));
 
             var dialog = new Dialog(Localization.HelpDialog.Title, 0, 0);
 

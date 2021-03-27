@@ -30,6 +30,11 @@ namespace CSLibreCell.Internal
         /// </summary>
         public CultureInfo UiCulture { get; }
 
+        /// <summary>
+        /// Gets the configuration of the keyboard keys.
+        /// </summary>
+        internal Keys KeysConfig { get; } = new Keys();
+
         /// <inheritdoc/>
         internal class Journey : IJourneyConfiguration
         {
@@ -46,57 +51,142 @@ namespace CSLibreCell.Internal
             public FileInfo Path { get; }
         }
 
-        internal static class Keys
+        /// <summary>
+        /// Collection of keyboard keys configuration.
+        /// </summary>
+        internal class Keys
         {
-            internal static class Menu
-            {
-                internal static Key RandomGame => Key.F5;
+            /// <summary>
+            /// Gets the configuration of keyboard keys for the menu.
+            /// </summary>
+            internal Menu Menu { get; } = new Menu();
 
-                internal static Key ChooseGame => Key.F8;
+            /// <summary>
+            /// Gets the configuration of keyboard keys for the game.
+            /// </summary>
+            internal Game Game { get; } = new Game();
+        }
 
-                internal static Key Help => Key.F1;
+        /// <summary>
+        /// Collection of keyboard keys configuration for the menu.
+        /// </summary>
+        internal class Menu
+        {
+            /// <summary>
+            /// Gets or sets the key to start a random game.
+            /// </summary>
+            internal Key RandomGame { get; set; } = Key.F5;
 
-                internal static Key Status => Key.F12;
-            }
+            /// <summary>
+            /// Gets or sets the key to start a chosen game.
+            /// </summary>
+            internal Key ChooseGame { get; set; } = Key.F8;
 
-            internal static class Game
-            {
-                internal static Key Cancel => Key.Space;
+            /// <summary>
+            /// Gets or sets the key to display the help dialog.
+            /// </summary>
+            internal Key Help { get; set; } = Key.F1;
 
-                internal static Key Undo => (Key)'R';
+            /// <summary>
+            /// Gets or sets the key to display the status dialog.
+            /// </summary>
+            internal Key Status { get; set; } = Key.F12;
+        }
 
-                internal static Key Cell0 => (Key)'q';
+        /// <summary>
+        /// Collection of keyboard keys configuration for the game.
+        /// </summary>
+        internal class Game
+        {
+            /// <summary>
+            /// Gets or sets the key to cancel the currently entered move.
+            /// </summary>
+            internal Key Cancel { get; set; } = Key.Space;
 
-                internal static Key Cell1 => (Key)'w';
+            /// <summary>
+            /// Gets or sets the key to undo the last move.
+            /// </summary>
+            internal Key Undo { get; set; } = (Key)'R';
 
-                internal static Key Cell2 => (Key)'e';
+            /// <summary>
+            /// Gets or sets the key to select the first cell.
+            /// </summary>
+            internal Key Cell0 { get; set; } = (Key)'q';
 
-                internal static Key Cell3 => (Key)'r';
+            /// <summary>
+            /// Gets or sets the key to select the second cell.
+            /// </summary>
+            internal Key Cell1 { get; set; } = (Key)'w';
 
-                internal static Key Column0 => (Key)'a';
+            /// <summary>
+            /// Gets or sets the key to select the third cell.
+            /// </summary>
+            internal Key Cell2 { get; set; } = (Key)'e';
 
-                internal static Key Column1 => (Key)'s';
+            /// <summary>
+            /// Gets or sets the key to select the fourth cell.
+            /// </summary>
+            internal Key Cell3 { get; set; } = (Key)'r';
 
-                internal static Key Column2 => (Key)'d';
+            /// <summary>
+            /// Gets or sets the key to select the first column.
+            /// </summary>
+            internal Key Column0 { get; set; } = (Key)'a';
 
-                internal static Key Column3 => (Key)'f';
+            /// <summary>
+            /// Gets or sets the key to select the second column.
+            /// </summary>
+            internal Key Column1 { get; set; } = (Key)'s';
 
-                internal static Key Column4 => (Key)'j';
+            /// <summary>
+            /// Gets or sets the key to select the third column.
+            /// </summary>
+            internal Key Column2 { get; set; } = (Key)'d';
 
-                internal static Key Column5 => (Key)'k';
+            /// <summary>
+            /// Gets or sets the key to select the fourth column.
+            /// </summary>
+            internal Key Column3 { get; set; } = (Key)'f';
 
-                internal static Key Column6 => (Key)'l';
+            /// <summary>
+            /// Gets or sets the key to select the fifth column.
+            /// </summary>
+            internal Key Column4 { get; set; } = (Key)'j';
 
-                internal static Key Column7 => (Key)'ö';
+            /// <summary>
+            /// Gets or sets the key to select the sixth column.
+            /// </summary>
+            internal Key Column5 { get; set; } = (Key)'k';
 
-                internal static Key Foundation0 => (Key)'u';
+            /// <summary>
+            /// Gets or sets the key to select the seventh column.
+            /// </summary>
+            internal Key Column6 { get; set; } = (Key)'l';
 
-                internal static Key Foundation1 => (Key)'i';
+            /// <summary>
+            /// Gets or sets the key to select the eighth column.
+            /// </summary>
+            internal Key Column7 { get; set; } = (Key)';';
 
-                internal static Key Foundation2 => (Key)'o';
+            /// <summary>
+            /// Gets or sets the key to select the first section of the foundation.
+            /// </summary>
+            internal Key Foundation0 { get; set; } = (Key)'u';
 
-                internal static Key Foundation3 => (Key)'p';
-            }
+            /// <summary>
+            /// Gets or sets the key to select the second section of the foundation.
+            /// </summary>
+            internal Key Foundation1 { get; set; } = (Key)'i';
+
+            /// <summary>
+            /// Gets or sets the key to select the third section of the foundation.
+            /// </summary>
+            internal Key Foundation2 { get; set; } = (Key)'o';
+
+            /// <summary>
+            /// Gets or sets the key to select the fourth section of the foundation.
+            /// </summary>
+            internal Key Foundation3 { get; set; } = (Key)'p';
         }
     }
 }
