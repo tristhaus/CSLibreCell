@@ -1,0 +1,34 @@
+﻿{
+	"_comment": "Escape your path and create the directory manually. UiCulture must parse to a C# culture",
+	"JourneyPath": "D:\\CSLibreCellJourney\\journey.cslibrecell",
+	"UiCulture": "en",
+	"Key": {
+		"_comment": "F1-F12 supported using angle brackets, otherwise, single characters",
+		"Menu": {
+			"RandomGame": "<F5>",
+			"ChooseGame": "<F8>",
+			"Help": "<F1>",
+			"Status": "<F12>"
+		},
+		"Game": {
+			"Cancel": " ",
+			"Undo": "R",
+			"Cell0": "q",
+			"Cell1": "w",
+			"Cell2": "e",
+			"Cell3": "r",
+			"Column0": "a",
+			"Column1": "s",
+			"Column2": "d",
+			"Column3": "f",
+			"Column4": "j",
+			"Column5": "k",
+			"Column6": "l",
+			"Column7": "ö",
+			"Foundation0": "u",
+			"Foundation1": "i",
+			"Foundation2": "o",
+			"Foundation3": "p"
+		}
+	}
+}

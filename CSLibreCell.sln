@@ -12,7 +12,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDBA2D21-3BC7-41FD-B9EB-25F8DB018587}"
 	ProjectSection(SolutionItems) = preProject
 		CSLibreCell.ruleset = CSLibreCell.ruleset
-		Scratch.txt = Scratch.txt
+		LICENSE = LICENSE
+		README = README
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{76DD072D-5BB3-4A0D-B856-EA0855CAEABA}"
+	ProjectSection(SolutionItems) = preProject
+		sample\config.json = sample\config.json
 	EndProjectSection
 EndProject
 Global
@@ -35,6 +41,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{76DD072D-5BB3-4A0D-B856-EA0855CAEABA} = {EDBA2D21-3BC7-41FD-B9EB-25F8DB018587}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B110EB62-6533-4D8C-818E-ABD4B09E80DE}
