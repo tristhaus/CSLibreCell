@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EDBA2D21-3BC7-41FD-B9EB-25F8DB018587}"
 	ProjectSection(SolutionItems) = preProject
 		CSLibreCell.ruleset = CSLibreCell.ruleset
+		Scratch.txt = Scratch.txt
 	EndProjectSection
 EndProject
 Global

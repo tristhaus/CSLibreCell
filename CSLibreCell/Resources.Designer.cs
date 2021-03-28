@@ -109,11 +109,30 @@ namespace CSLibreCell {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debug Log.
+        /// </summary>
+        internal static string HelpDialog_DebugLog {
+            get {
+                return ResourceManager.GetString("HelpDialog_DebugLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         internal static string HelpDialog_Title {
             get {
                 return ResourceManager.GetString("HelpDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon icon {
+            get {
+                object obj = ResourceManager.GetObject("icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
