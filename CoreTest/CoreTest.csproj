@@ -66,6 +66,7 @@ along with CSLibreCell.  If not, see <http://www.gnu.org/licenses/>.
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardFactoryTest.cs" />
     <Compile Include="CardTest.cs" />
     <Compile Include="ByteConverterTest.cs" />
     <Compile Include="GameTest.cs" />

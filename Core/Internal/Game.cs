@@ -37,6 +37,7 @@ namespace Core.Internal
         /// The ID of the game, if known, zero otherwise.
         /// </summary>
         private readonly uint id;
+        private readonly CardFactory cardFactory;
         private readonly Stack<Card>[] foundations = new Stack<Card>[4] { new Stack<Card>(), new Stack<Card>(), new Stack<Card>(), new Stack<Card>() };
         private readonly List<Card>[] columns = new List<Card>[8] { new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>(), new List<Card>() };
         private readonly Card[] cells = new Card[4] { null, null, null, null };
@@ -46,9 +47,10 @@ namespace Core.Internal
         /// filled with the game corresponding to the ID.
         /// </summary>
         /// <param name="gameId">The ID of the game to be created.</param>
-        public Game(uint gameId)
+        public Game(uint gameId, CardFactory cardFactory)
         {
             this.id = gameId;
+            this.cardFactory = cardFactory;
             this.IsImpossibleToWin = ImpossibleDeals.Contains(this.id);
             this.InitGame(gameId);
         }
@@ -61,6 +63,7 @@ namespace Core.Internal
         internal Game(Game other)
         {
             this.id = other.id;
+            this.cardFactory = other.cardFactory;
             this.IsImpossibleToWin = other.IsImpossibleToWin;
 
             // apparently, the reverse is by design of the C# Stack<>
@@ -72,6 +75,7 @@ namespace Core.Internal
         private Game()
         {
             this.id = 0;
+            this.cardFactory = new CardFactory();
         }
 
         /// <inheritdoc/>
@@ -145,9 +149,9 @@ namespace Core.Internal
         /// </summary>
         /// <param name="unicodeRepresentation">The Unicode representation</param>
         /// <returns>The corresponding game.</returns>
-        internal static Game ParseFromUnicodeRepresentation(string unicodeRepresentation)
+        internal static Game ParseFromDefaultUnicodeRepresentation(string unicodeRepresentation)
         {
-            return ParseFromRepresentation(unicodeRepresentation, x => Card.ParseFromUnicodeRepresentation(x));
+            return ParseFromDefaultRepresentation(unicodeRepresentation, x => Card.ParseFromDefaultUnicodeRepresentation(x));
         }
 
         /// <summary>
@@ -583,7 +587,7 @@ namespace Core.Internal
                 location == Location.Column7;
         }
 
-        private static Game ParseFromRepresentation(string representation, Func<string, Card> parseFunc)
+        private static Game ParseFromDefaultRepresentation(string representation, Func<string, Card> parseFunc)
         {
             void ParseCellsFoundationsInto(Game target, string input, Func<string, Card> parser)
             {
@@ -640,12 +644,7 @@ namespace Core.Internal
 
         private void InitGame(uint gameId)
         {
-            // create deck. Cards in correct order by their defintion
-            var deck = new List<Card>(52);
-            for (uint i = 0; i < 52; i++)
-            {
-                deck.Add(new Card(i));
-            }
+            var deck = this.cardFactory.CreateDeck();
 
             int columnIndex = 0;
             var prng = new Prng();

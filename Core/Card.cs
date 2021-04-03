@@ -43,7 +43,7 @@ namespace Core
             { Suit.Spades, "♠"},
         };
 
-        private static readonly Dictionary<Rank, string> RankMap = new Dictionary<Rank, string>
+        private static readonly Dictionary<Rank, string> DefaultRankMap = new Dictionary<Rank, string>
         {
             { Rank.Ace, "A"},
             { Rank.Two, "2"},
@@ -65,21 +65,26 @@ namespace Core
         /// </summary>
         private readonly uint Id;
 
+        private readonly Dictionary<Rank, string> RankMap;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Card"/> class.
         /// </summary>
         /// <param name="suit">The suit of the card.</param>
         /// <param name="rank">The rank of the card.</param>
-        internal Card(Suit suit, Rank rank)
+        /// <param name="rankMap">The map of rank to string representation to use, if not the default.</param>
+        internal Card(Suit suit, Rank rank, Dictionary<Rank, string> rankMap = null)
         {
             this.Id = (uint)rank * 4 + (uint)suit;
+            this.RankMap = rankMap ?? DefaultRankMap;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Card"/> class.
         /// </summary>
         /// <param name="id">The Id of the card as defined by the necessary order for FreeCell deals.</param>
-        internal Card(uint id)
+        /// <param name="rankMap">The map of rank to string representation to use, if not the default.</param>
+        internal Card(uint id, Dictionary<Rank, string> rankMap = null)
         {
             if (id >= 52)
             {
@@ -87,6 +92,7 @@ namespace Core
             }
 
             this.Id = id;
+            this.RankMap = rankMap ?? DefaultRankMap;
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace Core
         {
             get
             {
-                return RankMap[this.Rank] + SuitAsciiMap[this.Suit];
+                return this.RankMap[this.Rank] + SuitAsciiMap[this.Suit];
             }
         }
 
@@ -128,7 +134,7 @@ namespace Core
         {
             get
             {
-                return RankMap[this.Rank] + SuitUnicodeMap[this.Suit];
+                return this.RankMap[this.Rank] + SuitUnicodeMap[this.Suit];
             }
         }
 
@@ -170,9 +176,9 @@ namespace Core
         /// </summary>
         /// <param name="asciiRepresentation">The input ASCII representation.</param>
         /// <returns>The corresponding card.</returns>
-        internal static Card ParseFromAsciiRepresentation(string asciiRepresentation)
+        internal static Card ParseFromDefaultAsciiRepresentation(string asciiRepresentation)
         {
-            return ParseFromRepresentation(asciiRepresentation, SuitAsciiMap);
+            return ParseFromDefaultRepresentation(asciiRepresentation, SuitAsciiMap);
         }
 
         /// <summary>
@@ -180,12 +186,12 @@ namespace Core
         /// </summary>
         /// <param name="unicodeRepresentation">The input Unicode representation.</param>
         /// <returns>The corresponding card.</returns>
-        internal static Card ParseFromUnicodeRepresentation(string unicodeRepresentation)
+        internal static Card ParseFromDefaultUnicodeRepresentation(string unicodeRepresentation)
         {
-            return ParseFromRepresentation(unicodeRepresentation, SuitUnicodeMap);
+            return ParseFromDefaultRepresentation(unicodeRepresentation, SuitUnicodeMap);
         }
 
-        private static Card ParseFromRepresentation(string representation, Dictionary<Suit, string> suitMap)
+        private static Card ParseFromDefaultRepresentation(string representation, Dictionary<Suit, string> suitMap)
         {
             if (representation.Length != 2)
             {
@@ -193,7 +199,7 @@ namespace Core
             }
 
             var rankString = representation.Substring(0, 1);
-            var rank = RankMap.First(x => x.Value == rankString).Key;
+            var rank = DefaultRankMap.First(x => x.Value == rankString).Key;
 
             var suitString = representation.Substring(1, 1);
             var suit = suitMap.First(x => x.Value == suitString).Key;

@@ -29,7 +29,7 @@ namespace CoreTest
         public void GameCreationShouldGiveCorrectGame1()
         {
             // Arrange
-            var game = new Game(1);
+            var game = new Game(1, new CardFactory());
 
             var reference = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -52,7 +52,7 @@ namespace CoreTest
         public void GameCreationShouldGiveCorrectGame617()
         {
             // Arrange
-            var game = new Game(617);
+            var game = new Game(617, new CardFactory());
 
             var reference = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -75,7 +75,7 @@ namespace CoreTest
         public void GameCreationShouldGiveCorrectGame30828()
         {
             // Arrange
-            var game = new Game(30828);
+            var game = new Game(30828, new CardFactory());
 
             var reference = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -109,7 +109,7 @@ namespace CoreTest
   7♣  J♠  4♠  7♦                ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(reference);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(reference);
             var result = game.UnicodeRepresentation;
 
             // Assert
@@ -120,7 +120,7 @@ namespace CoreTest
         public void GameSimpleMovesShouldWorkCorrectly()
         {
             // Arrange
-            var game = new Game(20761);
+            var game = new Game(20761, new CardFactory());
 
             var reference = @" ..  TH  ..  .. || ..  ..  AH  ..
  --------------------------------
@@ -175,7 +175,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             game.MakeMove(Location.Column3, Location.Column5, 3);
             var representation = game.UnicodeRepresentation;
 
@@ -187,7 +187,7 @@ namespace CoreTest
         public void GameCopyCtorShouldYieldIndependentCopy()
         {
             // Arrange
-            var game = new Game(20761);
+            var game = new Game(20761, new CardFactory());
 
             var copyReference = @" ..  ..  ..  .. || ..  ..  ..  ..
  --------------------------------
@@ -229,7 +229,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
 
             var copy = new Game(game);
 
@@ -258,7 +258,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Foundation, Location.Foundation);
             var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Cell2);
             var result3 = game.GetLegalMoveSize(Location.Column2, Location.Column2);
@@ -288,7 +288,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Foundation, Location.Column4);
             var result2 = game.GetLegalMoveSize(Location.Foundation, Location.Cell0);
 
@@ -316,7 +316,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Cell0, Location.Column4);
             var result2 = game.GetLegalMoveSize(Location.Cell0, Location.Cell1);
             var result3 = game.GetLegalMoveSize(Location.Cell0, Location.Foundation);
@@ -346,7 +346,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.GetLegalMoveSize(Location.Cell2, Location.Column4);
 
             // Assert
@@ -372,7 +372,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column4, Location.Cell0);
             var result2 = game.GetLegalMoveSize(Location.Column4, Location.Column3);
             var result3 = game.GetLegalMoveSize(Location.Column4, Location.Foundation);
@@ -402,7 +402,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.GetLegalMoveSize(Location.Column3, Location.Cell0);
 
             // Assert
@@ -428,7 +428,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.GetLegalMoveSize(Location.Column3, Location.Cell2);
 
             // Assert
@@ -454,7 +454,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column3, Location.Foundation);
             var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Foundation);
 
@@ -482,7 +482,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column2, Location.Foundation);
             var result2 = game.GetLegalMoveSize(Location.Cell0, Location.Foundation);
 
@@ -509,7 +509,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column1);
             var result2 = game.GetLegalMoveSize(Location.Cell1, Location.Column3);
 
@@ -536,7 +536,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column6, Location.Column1);
             var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Column3);
             var result3 = game.GetLegalMoveSize(Location.Column7, Location.Column1);
@@ -568,7 +568,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column2, Location.Column4);
             var result2 = game.GetLegalMoveSize(Location.Cell2, Location.Column4);
 
@@ -596,7 +596,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column4);
 
             // Assert
@@ -622,7 +622,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column7, Location.Column4);
 
             // Assert
@@ -648,7 +648,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -674,7 +674,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -700,7 +700,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -726,7 +726,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -752,7 +752,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -779,7 +779,7 @@ namespace CoreTest
                       6♥        ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.GetLegalMoveSize(Location.Column5, Location.Column3);
 
             // Assert
@@ -794,7 +794,7 @@ namespace CoreTest
  --------------------------------";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.IsWon;
 
             // Assert
@@ -820,7 +820,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.IsWon;
 
             // Assert
@@ -860,7 +860,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -902,7 +902,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -944,7 +944,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -986,7 +986,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1014,7 +1014,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1042,7 +1042,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1070,7 +1070,7 @@ namespace CoreTest
   7♣                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1098,7 +1098,7 @@ namespace CoreTest
   7♣                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1140,7 +1140,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1182,7 +1182,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1210,7 +1210,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1238,7 +1238,7 @@ namespace CoreTest
   7♥                            ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1261,7 +1261,7 @@ namespace CoreTest
   Q♣  J♠  Q♦                    ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1284,7 +1284,7 @@ namespace CoreTest
   Q♣  J♠  Q♦                    ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1316,7 +1316,7 @@ namespace CoreTest
   Q♣  J♠  Q♦                    ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1348,7 +1348,7 @@ namespace CoreTest
   Q♣  J♠  Q♦                    ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1374,7 +1374,7 @@ namespace CoreTest
               5♥                   ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
 
             while (game.AutoMoveToFoundation()) ;
@@ -1413,7 +1413,7 @@ namespace CoreTest
       Q♠                        ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;
 
@@ -1457,7 +1457,7 @@ namespace CoreTest
           3♦                    ";
 
             // Act
-            var game = Game.ParseFromUnicodeRepresentation(state);
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
             var result1 = game.AutoMoveToFoundation();
             var result2 = game.AutoMoveToFoundation();
             var representation = game.UnicodeRepresentation;

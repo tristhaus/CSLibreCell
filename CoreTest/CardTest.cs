@@ -62,20 +62,20 @@ namespace CoreTest
         }
 
         [TestMethod]
-        public void CardShouldParseAsciiRepresentationCorrectly()
+        public void CardShouldParseDefaultAsciiRepresentationCorrectly()
         {
             // Arrange
             var asciiRepresentation = "3S"; // Three of Spades
 
             // Act
-            var result = Card.ParseFromAsciiRepresentation(asciiRepresentation);
+            var result = Card.ParseFromDefaultAsciiRepresentation(asciiRepresentation);
 
             // Assert
             Assert.AreEqual(new Card(11), result);
         }
 
         [TestMethod]
-        public void CardShouldCorrectlyRoundTripEntireDeckAscii()
+        public void CardShouldCorrectlyRoundTripEntireDeckDefaultAscii()
         {
             // Arrange
             var referenceDeck = new List<Card>(52);
@@ -86,14 +86,14 @@ namespace CoreTest
 
             // Act
             var asciiRepresentationDeck = referenceDeck.Select(x => x.AsciiRepresentation).ToList();
-            var result = asciiRepresentationDeck.Select(x => Card.ParseFromAsciiRepresentation(x)).ToList();
+            var result = asciiRepresentationDeck.Select(x => Card.ParseFromDefaultAsciiRepresentation(x)).ToList();
 
             // Assert
             Assert.IsTrue(referenceDeck.SequenceEqual(result));
         }
 
         [TestMethod]
-        public void CardShouldCorrectlyRoundTripEntireDeckUnicode()
+        public void CardShouldCorrectlyRoundTripEntireDeckDefaultUnicode()
         {
             // Arrange
             var referenceDeck = new List<Card>(52);
@@ -104,7 +104,7 @@ namespace CoreTest
 
             // Act
             var unicodeRepresentationDeck = referenceDeck.Select(x => x.UnicodeRepresentation).ToList();
-            var result = unicodeRepresentationDeck.Select(x => Card.ParseFromUnicodeRepresentation(x)).ToList();
+            var result = unicodeRepresentationDeck.Select(x => Card.ParseFromDefaultUnicodeRepresentation(x)).ToList();
 
             // Assert
             Assert.IsTrue(referenceDeck.SequenceEqual(result));

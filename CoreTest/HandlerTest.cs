@@ -26,7 +26,6 @@ namespace CoreTest
     [TestClass]
     public class HandlerTest
     {
-
         [TestMethod]
         public void GameHandlerShouldCreateGameAndMakeMove()
         {
@@ -133,6 +132,39 @@ namespace CoreTest
             Assert.IsTrue(refresh4);
             Assert.IsFalse(refresh5);
             Assert.AreEqual(reference1, state3);
+        }
+
+        [TestMethod]
+        public void GameHandlerShouldCreateGameWithConfiguredRepresentation()
+        {
+            // Arrange
+            List<uint> games = new List<uint>
+            {
+                123,
+                456,
+                789,
+            };
+            var memoryJourney = new MemoryJourney(Stage.First32000, games);
+            var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
+
+            var handler = new Handler(journeyMemoryRepository, "NRDBZ");
+            handler.NewGame(30828);
+
+            var reference = @" ..  ..  ..  .. || ..  ..  ..  ..
+ --------------------------------
+  4♦  Z♥  B♣  9♦  7♠  3♠  B♦  5♠
+  D♠  R♠  8♥  R♥  5♥  6♦  2♠  3♦
+  3♣  8♣  3♥  6♥  6♠  5♦  N♠  2♦
+  4♥  5♣  9♣  4♣  N♣  D♥  6♣  9♥
+  8♦  N♦  Z♦  R♣  7♥  N♥  8♠  Z♠
+  D♣  2♥  Z♣  B♥  R♦  D♦  9♠  2♣
+  7♣  B♠  4♠  7♦                ";
+
+            // Act
+            var state = handler.UnicodeGameRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference, state);
         }
 
         [TestMethod]

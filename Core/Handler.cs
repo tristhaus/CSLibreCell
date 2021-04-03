@@ -31,6 +31,7 @@ namespace Core
 
         private readonly IJourneyRepository journeyRepository;
         private readonly Stack<Game> gameStates = new Stack<Game>();
+        private readonly CardFactory cardFactory;
 
         private IJourney journey = new Journey(Stage.NotStarted, new List<uint>(0));
         private Game game = null;
@@ -39,8 +40,8 @@ namespace Core
         /// Initializes a new instance of the <see cref="Handler"/> class using the proper journey repository.
         /// </summary>
         /// <param name="journeyConfiguration">The configuration concerning the storage of the journey.</param>
-        public Handler(IJourneyConfiguration journeyConfiguration)
-            : this(new JourneyRepository(journeyConfiguration))
+        public Handler(IJourneyConfiguration journeyConfiguration, string cardRepresentationConfig = null)
+            : this(new JourneyRepository(journeyConfiguration), cardRepresentationConfig)
         {
         }
 
@@ -48,7 +49,7 @@ namespace Core
         /// Initializes a new instance of the <see cref="Handler"/> class using the supplied journey repository.
         /// </summary>
         /// <param name="journeyRepository">The supplied journey repository.</param>
-        internal Handler(IJourneyRepository journeyRepository)
+        internal Handler(IJourneyRepository journeyRepository, string cardRepresentationConfig = null)
         {
             this.journeyRepository = journeyRepository;
 
@@ -59,6 +60,8 @@ namespace Core
                 this.journey = this.CreateNewJourney();
                 this.journeyRepository.Write(this.journey);
             }
+
+            this.cardFactory = new CardFactory(cardRepresentationConfig);
         }
 
         /// <summary>
@@ -202,7 +205,7 @@ namespace Core
 
         private void InitAndPrepareGame(uint gameId)
         {
-            this.game = new Game(gameId);
+            this.game = new Game(gameId, this.cardFactory);
             while (this.game.AutoMoveToFoundation()) ;
 
             this.gameStates.Clear();
