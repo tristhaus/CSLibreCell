@@ -78,7 +78,7 @@ namespace CSLibreCell
                 CultureInfo.CurrentUICulture = Config.UiCulture;
             }
 
-            Handler = new Handler(Config.JourneyConfig);
+            Handler = new Handler(Config.JourneyConfig, Config.CardConfig);
         }
 
         static void Main()

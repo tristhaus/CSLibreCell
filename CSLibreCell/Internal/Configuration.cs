@@ -32,9 +32,10 @@ namespace CSLibreCell.Internal
         /// Initializes a new instance of the <see cref="Configuration"/> class.
         /// </summary>
         /// <param name="journeyPath">The info concerning the storage location for the journey.</param>
-        public Configuration(FileInfo journeyPath, CultureInfo uiCulture)
+        public Configuration(FileInfo journeyPath, string rankRepresentations, CultureInfo uiCulture)
         {
             this.JourneyConfig = new Journey(journeyPath);
+            this.CardConfig = new CardConfiguration(rankRepresentations);
             this.UiCulture = uiCulture;
         }
 
@@ -42,6 +43,11 @@ namespace CSLibreCell.Internal
         /// Gets the configuration concerning the journey.
         /// </summary>
         public Journey JourneyConfig { get; }
+
+        /// <summary>
+        /// Gets the configuration concerning the cards.
+        /// </summary>
+        public CardConfiguration CardConfig { get; }
 
         /// <summary>
         /// Gets the configured UI culture. Can be <c>null</c>.
@@ -67,6 +73,22 @@ namespace CSLibreCell.Internal
 
             /// <inheritdoc/>
             public FileInfo Path { get; }
+        }
+
+        /// <inheritdoc/>
+        internal class CardConfiguration : ICardConfiguration
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CardConfiguration"/> class.
+            /// </summary>
+            /// <param name="rankRepresentations">The info concerning the rank representation.</param>
+            public CardConfiguration(string rankRepresentations)
+            {
+                this.RankRepresentations = rankRepresentations;
+            }
+
+            /// <inheritdoc/>
+            public string RankRepresentations { get; }
         }
 
         /// <summary>

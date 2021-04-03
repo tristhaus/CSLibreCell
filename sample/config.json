@@ -1,6 +1,7 @@
 ﻿{
-	"_comment": "Escape your path and create the directory manually. UiCulture must parse to a C# culture",
+	"_comment": "JourneyPath must be escaped and a manually created directory. RankRepresentations of Ace, King, Queen, Jack, Ten as single string. UiCulture must parse to a C# culture",
 	"JourneyPath": "D:\\CSLibreCellJourney\\journey.cslibrecell",
+	"RankRepresentations": "AKQJT",
 	"UiCulture": "en",
 	"Key": {
 		"_comment": "F1-F12 supported using angle brackets, otherwise, single characters",

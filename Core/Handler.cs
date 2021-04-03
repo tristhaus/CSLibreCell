@@ -40,8 +40,9 @@ namespace Core
         /// Initializes a new instance of the <see cref="Handler"/> class using the proper journey repository.
         /// </summary>
         /// <param name="journeyConfiguration">The configuration concerning the storage of the journey.</param>
-        public Handler(IJourneyConfiguration journeyConfiguration, string cardRepresentationConfig = null)
-            : this(new JourneyRepository(journeyConfiguration), cardRepresentationConfig)
+        /// <param name="cardConfiguration">The configuration concerning the cards.</param>
+        public Handler(IJourneyConfiguration journeyConfiguration, ICardConfiguration cardConfiguration)
+            : this(new JourneyRepository(journeyConfiguration), cardConfiguration?.RankRepresentations)
         {
         }
 
@@ -49,7 +50,8 @@ namespace Core
         /// Initializes a new instance of the <see cref="Handler"/> class using the supplied journey repository.
         /// </summary>
         /// <param name="journeyRepository">The supplied journey repository.</param>
-        internal Handler(IJourneyRepository journeyRepository, string cardRepresentationConfig = null)
+        /// <param name="rankRepresentationConfig">The string configuring the rank representation.</param>
+        internal Handler(IJourneyRepository journeyRepository, string rankRepresentationConfig = null)
         {
             this.journeyRepository = journeyRepository;
 
@@ -61,7 +63,7 @@ namespace Core
                 this.journeyRepository.Write(this.journey);
             }
 
-            this.cardFactory = new CardFactory(cardRepresentationConfig);
+            this.cardFactory = new CardFactory(rankRepresentationConfig);
         }
 
         /// <summary>

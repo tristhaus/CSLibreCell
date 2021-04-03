@@ -43,23 +43,23 @@ namespace Core
         /// <summary>
         /// Initializes a new instance of the <see cref="CardFactory"/> class.
         /// </summary>
-        /// <param name="config">The configuration of the rank representation (5 chars in length).</param>
-        internal CardFactory(string config = null)
+        /// <param name="rankRepresentationConfig">The configuration of the rank representation (5 chars in length).</param>
+        internal CardFactory(string rankRepresentationConfig = null)
         {
-            if (config != null)
+            if (rankRepresentationConfig != null)
             {
-                if (config.Length != 5)
+                if (rankRepresentationConfig.Length != 5)
                 {
-                    throw new ArgumentException($"if {nameof(config)} is provided, it must be five characters long, it is: '{config}'");
+                    throw new ArgumentException($"if {nameof(rankRepresentationConfig)} is provided, it must be five characters long, it is: '{rankRepresentationConfig}'");
                 }
 
                 this.rankMap = new Dictionary<Rank, string>(RankMapTemplate)
                 {
-                    { Rank.Ace, config.Substring(0, 1) },
-                    { Rank.King, config.Substring(1, 1) },
-                    { Rank.Queen, config.Substring(2, 1) },
-                    { Rank.Jack, config.Substring(3, 1) },
-                    { Rank.Ten, config.Substring(4, 1) }
+                    { Rank.Ace, rankRepresentationConfig.Substring(0, 1) },
+                    { Rank.King, rankRepresentationConfig.Substring(1, 1) },
+                    { Rank.Queen, rankRepresentationConfig.Substring(2, 1) },
+                    { Rank.Jack, rankRepresentationConfig.Substring(3, 1) },
+                    { Rank.Ten, rankRepresentationConfig.Substring(4, 1) }
                 };
             }
         }

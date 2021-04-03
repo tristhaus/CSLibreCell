@@ -60,6 +60,7 @@ along with CSLibreCell.  If not, see <http://www.gnu.org/licenses/>.
   <ItemGroup>
     <Compile Include="Card.cs" />
     <Compile Include="CardFactory.cs" />
+    <Compile Include="ICardConfiguration.cs" />
     <Compile Include="IJourneyConfiguration.cs" />
     <Compile Include="Internal\Game.cs" />
     <Compile Include="Handler.cs" />

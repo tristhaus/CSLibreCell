@@ -95,6 +95,20 @@ namespace CSLibreCell.Internal
 
                 log.Add($"using journey storage file {journeyFileinfo.FullName}");
 
+                string rankRepresentations = null;
+
+                if (persistedConfiguration.RankRepresentations != null)
+                {
+                    if (persistedConfiguration.RankRepresentations.Length == 5)
+                    {
+                        rankRepresentations = persistedConfiguration.RankRepresentations;
+                    }
+                    else
+                    {
+                        log.Add($"RankRepresentation should be 5 characters, is '{persistedConfiguration.RankRepresentations}' at {persistedConfiguration.RankRepresentations.Length} characters");
+                    }
+                }
+
                 CultureInfo uiCulture = null;
                 try
                 {
@@ -109,7 +123,7 @@ namespace CSLibreCell.Internal
                     log.Add($"'{persistedConfiguration.UiCulture}' does not parse to a C# culture");
                 }
 
-                var configuration = new Configuration(journeyFileinfo, uiCulture);
+                var configuration = new Configuration(journeyFileinfo, rankRepresentations, uiCulture);
                 this.ConfigureKeys(persistedConfiguration, log, configuration);
 
                 return (configuration, log);
@@ -143,7 +157,7 @@ namespace CSLibreCell.Internal
         {
             FileInfo journeyFileinfo = CreateDefaultJourneyFileinfo();
 
-            return new Configuration(journeyFileinfo, uiCulture: null);
+            return new Configuration(journeyFileinfo, rankRepresentations: null, uiCulture: null);
         }
 
         private FileInfo CreateDefaultJourneyFileinfo()
@@ -254,6 +268,9 @@ namespace CSLibreCell.Internal
         {
             [JsonProperty("JourneyPath")]
             public string JourneyPath { get; private set; }
+
+            [JsonProperty("RankRepresentations")]
+            public string RankRepresentations { get; private set; }
 
             [JsonProperty("UiCulture")]
             public string UiCulture { get; private set; }
