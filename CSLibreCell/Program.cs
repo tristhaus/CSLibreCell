@@ -345,7 +345,7 @@ namespace CSLibreCell
                 {
                     AddGameIdToWindow();
 
-                    RefreshGame();
+                    ResetMoveDisplay();
                 }
             }
         }
@@ -392,7 +392,7 @@ namespace CSLibreCell
             {
                 AddGameIdToWindow();
 
-                RefreshGame();
+                ResetMoveDisplay();
             }
 
             return gameIsWinnable;
@@ -493,7 +493,7 @@ namespace CSLibreCell
                     Width = Dim.Fill(),
                     Height = Dim.Fill(),
                 };
-                
+
                 debugDialog.Add(textView);
 
                 var closeDebugLog = new Button(Localization.OK, is_default: true);
@@ -501,7 +501,7 @@ namespace CSLibreCell
                 {
                     debugDialog.Running = false;
                 };
-                
+
                 debugDialog.AddButton(closeDebugLog);
 
                 Application.Run(debugDialog);
