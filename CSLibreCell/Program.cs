@@ -95,7 +95,7 @@ namespace CSLibreCell
                 var copy = cellIndex;
                 cellLabel.Clicked += () =>
                 {
-                    if ((Source != null && Handler.Game != null && Handler.Game.Cells[copy] == null) || Source == null && Handler.Game?.Cells[copy] != null)
+                    if (Source != null || (Source == null && Handler.Game?.Cells[copy] != null))
                     {
                         HandleLocation(Location.Cell0 + copy, highlight: true);
                         RefreshGame();
