@@ -217,6 +217,12 @@ namespace Core.Internal
                     return 0;
                 }
 
+                // no move involving "free cell"
+                if (source == Location.FreeCell || destination == Location.FreeCell)
+                {
+                    return 0;
+                }
+
                 // no move from empty cell
                 if ((source == Location.Cell0 ||
                     source == Location.Cell1 ||
@@ -573,6 +579,23 @@ namespace Core.Internal
 
             return false;
 
+        }
+
+        /// <summary>
+        /// Find the first free cell, if any.
+        /// </summary>
+        /// <returns>A <see cref="Location"/> referring to a free cell, or <c>null</c> if none exists.</returns>
+        internal Location? FindFreeCellDestination()
+        {
+            for (int i = 0; i < cells.Length; i++)
+            {
+                if (this.cells[i] == null)
+                {
+                    return Location.Cell0 + i;
+                }
+            }
+
+            return null;
         }
 
         private static bool IsColumnLocation(Location location)

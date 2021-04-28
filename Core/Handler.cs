@@ -129,6 +129,20 @@ namespace Core
         {
             if (this.game?.IsWon == false)
             {
+                if (destination == Location.FreeCell)
+                {
+                    var candidateDestination = this.game.FindFreeCellDestination();
+
+                    if (candidateDestination == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        destination = (Location)candidateDestination;
+                    }
+                }
+
                 var moveSize = this.game.GetLegalMoveSize(source, destination);
 
                 if (moveSize > 0)

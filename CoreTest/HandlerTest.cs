@@ -339,6 +339,61 @@ namespace CoreTest
             Assert.IsFalse(result5);
         }
 
+        [TestMethod]
+        public void GameHandlerShouldCorrectlyHandleFreeCellDestinationMoves()
+        {
+            // Arrange
+            List<uint> games = new List<uint>
+            {
+                123,
+                456,
+                789,
+            };
+            var memoryJourney = new MemoryJourney(Stage.First32000, games);
+            var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
+
+            var handler = new Handler(journeyMemoryRepository);
+            handler.NewGame(30828);
+
+            var reference1 = @" ..  ..  ..  .. || ..  ..  ..  ..
+ --------------------------------
+  4♦  T♥  J♣  9♦  7♠  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥  5♥  6♦  2♠  3♦
+  3♣  8♣  3♥  6♥  6♠  5♦  A♠  2♦
+  4♥  5♣  9♣  4♣  A♣  Q♥  6♣  9♥
+  8♦  A♦  T♦  K♣  7♥  A♥  8♠  T♠
+  Q♣  2♥  T♣  J♥  K♦  Q♦  9♠  2♣
+  7♣  J♠  4♠  7♦                ";
+
+            var reference2 = @" J♠  2♥  5♣  8♣ || ..  ..  ..  A♦
+ --------------------------------
+  4♦  T♥  J♣  9♦  7♠  3♠  J♦  5♠
+  Q♠  K♠  8♥  K♥  5♥  6♦  2♠  3♦
+  3♣      3♥  6♥  6♠  5♦  A♠  2♦
+  4♥      9♣  4♣  A♣  Q♥  6♣  9♥
+  8♦      T♦  K♣  7♥  A♥  8♠  T♠
+  Q♣      T♣  J♥  K♦  Q♦  9♠  2♣
+  7♣      4♠  7♦                ";
+
+            // Act
+            var state1 = handler.UnicodeGameRepresentation;
+            var refresh1 = handler.Move(Location.Column1, Location.Cell0);
+            var refresh2 = handler.Move(Location.Column1, Location.Cell1);
+            var refresh3 = handler.Move(Location.Column1, Location.FreeCell);
+            var refresh4 = handler.Move(Location.Column1, Location.FreeCell);
+            var refresh5 = handler.Move(Location.Column2, Location.FreeCell);
+            var state2 = handler.UnicodeGameRepresentation;
+
+            // Assert
+            Assert.AreEqual(reference1, state1);
+            Assert.IsTrue(refresh1);
+            Assert.IsTrue(refresh2);
+            Assert.IsTrue(refresh3);
+            Assert.IsTrue(refresh4);
+            Assert.IsFalse(refresh5);
+            Assert.AreEqual(reference2, state2);
+        }
+
         /// <summary>
         /// Helper method that will execute the moves for game #100.
         /// </summary>

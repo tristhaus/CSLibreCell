@@ -36,5 +36,6 @@ namespace Core
         Column6 = 10,
         Column7 = 11,
         Foundation = 12,
+        FreeCell = 13,
     }
 }

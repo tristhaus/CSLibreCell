@@ -1467,5 +1467,86 @@ namespace CoreTest
             Assert.IsTrue(result2);
             Assert.AreEqual(reference, representation);
         }
+
+        [TestMethod]
+        public void FreeCellDestinationShouldBeFoundCorrectly1()
+        {
+            // Arrange
+            var state = @" ..  T♠  ..  T♥ || 3♣  3♠  2♥  A♦
+ --------------------------------
+  J♦  8♣  9♠  7♦  4♦  8♥  K♥  4♣
+  6♦  Q♥  7♠  6♠  3♥  7♣  Q♣  9♣
+  5♠  2♦  J♠          6♥  8♦  K♣
+  Q♠  5♥  J♥          5♣      K♠
+  9♦  K♦  T♣          4♥      Q♦
+          9♥                  J♣
+          8♠                  T♦
+          7♥                    
+          6♣                    
+          5♦                    
+          4♠                    
+          3♦                    ";
+
+            // Act
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
+            var result = game.FindFreeCellDestination();
+
+            // Assert
+            Assert.AreEqual((Location?)Location.Cell0, result);
+        }
+
+        [TestMethod]
+        public void FreeCellDestinationShouldBeFoundCorrectly2()
+        {
+            // Arrange
+            var state = @" T♠  ..  ..  T♥ || 3♣  3♠  2♥  A♦
+ --------------------------------
+  J♦  8♣  9♠  7♦  4♦  8♥  K♥  4♣
+  6♦  Q♥  7♠  6♠  3♥  7♣  Q♣  9♣
+  5♠  2♦  J♠          6♥  8♦  K♣
+  Q♠  5♥  J♥          5♣      K♠
+  9♦  K♦  T♣          4♥      Q♦
+          9♥                  J♣
+          8♠                  T♦
+          7♥                    
+          6♣                    
+          5♦                    
+          4♠                    
+          3♦                    ";
+
+            // Act
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
+            var result = game.FindFreeCellDestination();
+
+            // Assert
+            Assert.AreEqual((Location?)Location.Cell1, result);
+        }
+
+        [TestMethod]
+        public void FreeCellDestinationShouldBeFoundCorrectly3()
+        {
+            // Arrange
+            var state = @" T♠  4♥  5♣  T♥ || 3♣  3♠  2♥  A♦
+ --------------------------------
+  J♦  8♣  9♠  7♦  4♦  8♥  K♥  4♣
+  6♦  Q♥  7♠  6♠  3♥  7♣  Q♣  9♣
+  5♠  2♦  J♠          6♥  8♦  K♣
+  Q♠  5♥  J♥                  K♠
+  9♦  K♦  T♣                  Q♦
+          9♥                  J♣
+          8♠                  T♦
+          7♥                    
+          6♣                    
+          5♦                    
+          4♠                    
+          3♦                    ";
+
+            // Act
+            var game = Game.ParseFromDefaultUnicodeRepresentation(state);
+            var result = game.FindFreeCellDestination();
+
+            // Assert
+            Assert.AreEqual(null, result);
+        }
     }
 }
