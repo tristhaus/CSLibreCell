@@ -153,23 +153,34 @@ namespace CSLibreCell
                 var list = new List<Label>(19);
                 for (int i = 0; i < 19; i++)
                 {
-                    var label = new Label("    ") { X = 1 + columnIndex * 4, Y = 3 + i, Width = 4, Height = 1 };
-
-                    list.Add(label);
-                    allGameLabels.Add(label);
-                }
-
-                foreach (var label in list)
-                {
                     var copy = columnIndex;
-                    label.Clicked += () =>
+
+                    void onSingleClick()
                     {
                         if ((Source == null && Handler.Game != null && Handler.Game.Columns[copy].Count > 0) || Source != null)
                         {
                             HandleLocation(Location.Column0 + copy, highlight: true);
                             RefreshGame();
                         }
-                    };
+                    }
+
+                    void onMultipleClick()
+                    {
+                        if (Source != null)
+                        {
+                            HandleLocation(Location.FreeCell);
+                            RefreshGame();
+                        }
+                        else
+                        {
+                            onSingleClick();
+                        }
+                    }
+
+                    var label = new ColumnLabel("    ", onSingleClick, onMultipleClick) { X = 1 + columnIndex * 4, Y = 3 + i, Width = 4, Height = 1 };
+
+                    list.Add(label);
+                    allGameLabels.Add(label);
                 }
 
                 ColumnLabels.Add(list);
