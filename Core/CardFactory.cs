@@ -68,8 +68,8 @@ namespace Core
         /// Create a deck in the correct order.
         /// </summary>
         /// <returns>The newly created deck.</returns>
-        /// <remarks>Cards in correct order by their defintion.</remarks>
-        internal List<Card> CreateDeck() // todo: front-end config
+        /// <remarks>Cards in correct order by their definition.</remarks>
+        internal List<Card> CreateDeck()
         {
             var deck = new List<Card>(52);
             for (uint i = 0; i < 52; i++)
