@@ -239,6 +239,36 @@ namespace CoreTest
         }
 
         [TestMethod]
+        public void GameHandlerShouldNotRemoveGameFromJourneyIfItIsNotWon()
+        {
+            // Arrange
+            List<uint> games = new List<uint>
+            {
+                100,
+            };
+            var memoryJourney = new MemoryJourney(Stage.First32000, games);
+            var journeyMemoryRepository = new JourneyMemoryRepository(memoryJourney);
+
+            var handler = new Handler(journeyMemoryRepository);
+
+            // Act
+            handler.JourneyGame();
+            var id1 = handler.Game.Id;
+            handler.NewGame(4);
+            var gameIsStillPresent = journeyMemoryRepository.Contained.Games.Contains(100u);
+            handler.JourneyGame();
+            var id2 = handler.Game.Id;
+            PlayGame100(handler);
+            var gameIsGone = !journeyMemoryRepository.Contained.Games.Contains(100u);
+
+            // Assert
+            Assert.AreEqual(100u, id1);
+            Assert.IsTrue(gameIsStillPresent);
+            Assert.AreEqual(100u, id2);
+            Assert.IsTrue(gameIsGone);
+        }
+
+        [TestMethod]
         public void GameHandlerShouldStartNewJourneyIfNoneIsProvided()
         {
             // Arrange
